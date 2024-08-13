@@ -1,0 +1,15 @@
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\bin\Debug\net8.0\JwtAuthenticationManager.deps.json
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\bin\Debug\net8.0\JwtAuthenticationManager.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\bin\Debug\net8.0\JwtAuthenticationManager.pdb
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.csproj.AssemblyReference.cache
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.AssemblyInfoInputs.cache
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.AssemblyInfo.cs
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.csproj.CoreCompileInputs.cache
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.sourcelink.json
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\refint\JwtAuthenticationManager.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.pdb
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\ref\JwtAuthenticationManager.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\bin\Debug\net8.0\JwtAuthenticationManager.runtimeconfig.json
+C:\Users\Surface\source\repos\HiloCinema\Backend\JwtAuthenticationManager\JwtAuthenticationManager\obj\Debug\net8.0\JwtAuthenticationManager.genruntimeconfig.cache

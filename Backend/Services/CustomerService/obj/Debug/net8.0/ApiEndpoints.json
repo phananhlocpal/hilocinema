@@ -1,0 +1,22 @@
+[
+  {
+    "ContainingType": "CustomerService.Controllers.CustomerController",
+    "Method": "GetAll",
+    "RelativePath": "api/CustomerService",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CustomerService.Controllers.CustomerController",
+    "Method": "GetAllCount",
+    "RelativePath": "api/CustomerService/count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
