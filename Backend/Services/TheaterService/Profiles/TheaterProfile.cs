@@ -9,6 +9,7 @@ namespace TheaterService.Profiles
         public TheaterProfile()
         {
             // Source -> Target
+            CreateMap<TheaterReadDto, Theater>();
             CreateMap<Theater, TheaterReadDto>();
             CreateMap<TheaterCreateDto, Theater>();
             CreateMap<Room, RoomReadDto>();

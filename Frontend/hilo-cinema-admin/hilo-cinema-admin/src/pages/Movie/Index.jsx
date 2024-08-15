@@ -2,8 +2,8 @@
 import axios from "axios";
 import { TableContainer, Table, Thead, Tr, Th, Td, Tbody, Button, Input, Flex, useDisclosure } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, ExternalLinkIcon } from "@chakra-ui/icons";
-import CreateMovieModal from "./create";
-import UpdateMovieModal from "./update";
+import CreateMovieModal from "./Create";
+import UpdateMovieModal from "./Update";
 import MyAlertDialog from "../../components/commom_component/alerts/AlertDialog";
 import TrailerModal from "./WatchTrailer";
 

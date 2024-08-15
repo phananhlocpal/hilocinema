@@ -16,6 +16,21 @@
         "TimeoutValue": 360000
       }
     },
+    {
+      "DownstreamPathTemplate": "/api/CustomerAuthen",
+      "DownstreamScheme": "https",
+      "UpstreamPathTemplate": "/CustomerAuthen",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 4000
+        }
+      ],
+      "QoSOptions": {
+        "TimeoutValue": 360000
+      }
+    },
     // Movie Service
     {
       "DownstreamPathTemplate": "/api/Movies/{movieId}",
@@ -74,12 +89,31 @@
         "TimeoutValue": 360000
       }
     },
+    {
+      "DownstreamPathTemplate": "/api/Movies/url/{movieUrl}",
+      "DownstreamScheme": "https",
+      "UpstreamPathTemplate": "/MovieService/url/{movieUrl}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put" ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "QoSOptions": {
+        "TimeoutValue": 360000
+      }
+    },
     // Theater Service
     {
       "DownstreamPathTemplate": "/api/Theaters",
       "DownstreamScheme": "http",
       "UpstreamPathTemplate": "/TheaterService",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHttpMethod": [ "Get", "Post", "Put" ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -90,6 +124,37 @@
         "TimeoutValue": 360000
       }
     },
+    {
+      "DownstreamPathTemplate": "/api/Theaters/{theaterId}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/TheaterService/{theaterId}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put" ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "QoSOptions": {
+        "TimeoutValue": 360000
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Theaters/{theaterId}/disable",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/TheaterService/{theaterId}/disable",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put" ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "QoSOptions": {
+        "TimeoutValue": 360000
+      }
+    },
+    // Seat service
     {
       "DownstreamPathTemplate": "/api/Seats",
       "DownstreamScheme": "http",

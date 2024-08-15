@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:5010") // Update this URL to match your React app's URL
+        builder.WithOrigins("http://localhost:1001") // Update this URL to match your React app's URL
                .AllowAnyHeader()
                .AllowAnyMethod();
     });

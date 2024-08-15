@@ -4,20 +4,20 @@ import axios from "axios";
 import PropTypes from "prop-types";
 
 const UpdateTheaterModal = ({ theater, isOpen, onClose, fetchTheaters }) => {
-    const [name, setName] = useState(theater.name);
-    const [email, setEmail] = useState(theater.email);
-    const [phone, setPhone] = useState(theater.phone);
-    const [address, setAddress] = useState(theater.address);
-    const [status, setStatus] = useState(theater.status);
+    const [name, setName] = useState('');
+    const [city, setCity] = useState('');
+    const [detailAddress, setDetailAddress] = useState('');
+    const [hotline, setHotline] = useState('');
+    const [status, setStatus] = useState('');
+
     const [scrollBehavior] = useState('inside');
 
     useEffect(() => {
-        // Reset form state when the modal opens
         if (theater) {
             setName(theater.name);
-            setEmail(theater.email);
-            setPhone(theater.phone);
-            setAddress(theater.address);
+            setCity(theater.city);
+            setDetailAddress(theater.detailAddress);
+            setHotline(theater.hotline);
             setStatus(theater.status);
         }
     }, [theater, isOpen]);
@@ -26,16 +26,12 @@ const UpdateTheaterModal = ({ theater, isOpen, onClose, fetchTheaters }) => {
         const token = localStorage.getItem("jwtToken");
 
         const data = {
-            id: theater.id, // Use the theater ID
-            name: theater.name,
-            email: theater.email,
-            address: theater.address,
-            phone: theater.phone,
-            gender: theater.gender, 
-            birthdate: theater.birthdate, // Assuming birthdate is part of theater object
-            password: theater.password, // Assuming password is part of theater object
-            created_date: theater.created_date, // Assuming created_date is part of theater object
-            status: status || null,
+            id: theater.id,
+            name: name,
+            city: city,
+            detailAddress: detailAddress,
+            hotline: hotline,
+            status: status,
         };
 
         try {
@@ -57,7 +53,7 @@ const UpdateTheaterModal = ({ theater, isOpen, onClose, fetchTheaters }) => {
         <Modal isOpen={isOpen} onClose={onClose} size={"xl"} scrollBehavior={scrollBehavior}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Cập nhật khách hàng</ModalHeader>
+                <ModalHeader>Cập nhật rạp chiếu</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
                     <FormControl>
@@ -69,29 +65,27 @@ const UpdateTheaterModal = ({ theater, isOpen, onClose, fetchTheaters }) => {
                         />
                     </FormControl>
                     <FormControl mt={4}>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Thành phố</FormLabel>
                         <Input
-                            type='email'
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Thành phố"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
                         />
                     </FormControl>
                     <FormControl mt={4}>
-                        <FormLabel>Phone</FormLabel>
+                        <FormLabel>Địa chỉ</FormLabel>
                         <Input
-                            type='tel'
-                            placeholder="Phone"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="Địa chỉ"
+                            value={detailAddress}
+                            onChange={(e) => setDetailAddress(e.target.value)}
                         />
                     </FormControl>
                     <FormControl mt={4}>
-                        <FormLabel>Address</FormLabel>
+                        <FormLabel>Hotline</FormLabel>
                         <Input
-                            placeholder="Address"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="Hotline"
+                            value={hotline}
+                            onChange={(e) => setHotline(e.target.value)}
                         />
                     </FormControl>
                     <FormControl mt={4}>

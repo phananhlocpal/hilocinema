@@ -85,7 +85,7 @@ const CreateMovieModal = ({ isOpen, onClose, fetchMovies }) => {
             imgLarge: imgLargeBase64,
             movieType: movieType || null,
             trailer: trailer || null,
-            status: status || null
+            status: "Active",
         };
 
         try {

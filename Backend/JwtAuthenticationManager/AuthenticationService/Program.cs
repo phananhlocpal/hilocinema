@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Configure database context
 builder.Services.AddDbContext<AuthenticateContext>(options =>
@@ -29,8 +30,16 @@ builder.Services.AddSingleton<IHostedService>(provider => provider.GetRequiredSe
 // Configure CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
+    options.AddPolicy("AllowAdmin",
         builder => builder.WithOrigins("http://localhost:1000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials());
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowPublic",
+        builder => builder.WithOrigins("http://localhost:2000")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials());
@@ -46,7 +55,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowAdmin");
+app.UseCors("AllowPublic");
 app.UseAuthorization();
 app.MapControllers();
 

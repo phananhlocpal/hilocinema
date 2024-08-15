@@ -1,16 +1,14 @@
 ﻿// createTheater.jsx
 import { useState } from "react";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Textarea, Select, Button } from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Textarea, Button } from "@chakra-ui/react";
 import axios from "axios";
 import PropTypes from "prop-types";
 
 const CreateTheaterModal = ({ isOpen, onClose, fetchTheaters }) => {
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
-    const [gender, setGender] = useState('');
-    const [birthdate, setBirthdate] = useState('');
+    const [city, setCity] = useState('');
+    const [detailAddress, setDetailAddress] = useState('');
+    const [hotline, setHotline] = useState('');
 
     const [scrollBehavior] = useState('inside');
 
@@ -19,11 +17,10 @@ const CreateTheaterModal = ({ isOpen, onClose, fetchTheaters }) => {
 
         const data = {
             name: name,
-            email: email,
-            phone: phone,
-            address: address,
-            gender: gender,
-            birthdate: birthdate,
+            city: city,
+            detailAddress: detailAddress,
+            hotline: hotline,
+            status: "Active",
         };
 
         try {
@@ -32,10 +29,9 @@ const CreateTheaterModal = ({ isOpen, onClose, fetchTheaters }) => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                     Site: 'admin',
-                    Role: 'admin'
                 },
             });
-            onClose(); // Close modal on success
+            onClose();
             fetchTheaters();
         } catch (error) {
             console.error("Error saving theater:", error.response ? error.response.data : error.message);
@@ -46,60 +42,39 @@ const CreateTheaterModal = ({ isOpen, onClose, fetchTheaters }) => {
         <Modal isOpen={isOpen} onClose={onClose} size={"xl"} scrollBehavior={scrollBehavior}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Tạo mới nhân viên</ModalHeader>
+                <ModalHeader>Tạo mới rạp chiếu</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
                     <FormControl>
                         <FormLabel>Name</FormLabel>
                         <Input
-                            placeholder="Name"
+                            placeholder="Tên rạp chiếu"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
                     </FormControl>
                     <FormControl mt={4}>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>City</FormLabel>
                         <Input
-                            type='email'
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Thành phố"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
                         />
                     </FormControl>
                     <FormControl mt={4}>
-                        <FormLabel>Phone</FormLabel>
+                        <FormLabel>Địa chỉ</FormLabel>
                         <Input
-                            placeholder="Phone"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="Địa chỉ chi tiết"
+                            value={detailAddress}
+                            onChange={(e) => setDetailAddress(e.target.value)}
                         />
                     </FormControl>
                     <FormControl mt={4}>
-                        <FormLabel>Address</FormLabel>
+                        <FormLabel>Hotline</FormLabel>
                         <Textarea
-                            placeholder="Address"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                        />
-                    </FormControl>
-                    <FormControl mt={4}>
-                        <FormLabel>Gender</FormLabel>
-                        <Select
-                            placeholder="Select Gender"
-                            value={gender}
-                            onChange={(e) => setGender(e.target.value)}
-                        >
-                            <option value='Male'>Male</option>
-                            <option value='Female'>Female</option>
-                            <option value='Other'>Other</option>
-                        </Select>
-                    </FormControl>
-                    <FormControl mt={4}>
-                        <FormLabel>Birthdate</FormLabel>
-                        <Input
-                            type='date'
-                            value={birthdate}
-                            onChange={(e) => setBirthdate(e.target.value)}
+                            placeholder="Hotline"
+                            value={hotline}
+                            onChange={(e) => setHotline(e.target.value)}
                         />
                     </FormControl>
                 </ModalBody>

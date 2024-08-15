@@ -15,7 +15,7 @@ const RouterComponent = () => {
           <Route path="/dien-anh" element={<PostListPage />} />
           <Route path="/dat-ve" element={<BookingPage/>}/>
           <Route path="/dat-ve/:movieId" element={<BookingPage />} />
-          <Route path="/chon-phim" element={<FilmDetail />} />
+          <Route path="/chon-phim/:movieUrl" element={<FilmDetail />} />
           <Route path="/rap-chieu" element={<TheaterPage/>} />
         </Route>
       </Routes>

@@ -39,6 +39,7 @@ const TheaterPage = () => {
         try {
             await axios.put(`http://localhost:8000/TheaterService/${theaterId}/disable`, null, {
                 headers: {
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                     Site: "admin",
                 },
@@ -83,7 +84,7 @@ const TheaterPage = () => {
     };
 
     const filteredTheaters = theaters
-        // .filter((theater) => theater.status == "Active")
+        .filter((theater) => theater.status == "Active")
         .filter((theater) => theater.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
     return (
@@ -113,11 +114,8 @@ const TheaterPage = () => {
                     <Thead>
                         <Tr>
                             <Th>Tên</Th>
-                            <Th>Email</Th>
-                            <Th>Điện thoại</Th>
-                            <Th>Địa chỉ</Th>
-                            <Th>Giới tính</Th>
-                            <Th>Ngày sinh</Th>
+                            <Th>Thành phố</Th>
+                            <Th>Hotline</Th>
                             <Th isNumeric>Hành động</Th>
                         </Tr>
                     </Thead>
@@ -125,11 +123,8 @@ const TheaterPage = () => {
                         {filteredTheaters.map((theater) => (
                             <Tr key={theater.id}>
                                 <Td>{theater.name}</Td>
-                                <Td>{theater.email}</Td>
-                                <Td>{theater.phone}</Td>
-                                <Td>{theater.address}</Td>
-                                <Td>{theater.gender}</Td>
-                                <Td>{theater.birthdate}</Td>
+                                <Td>{theater.city}</Td>
+                                <Td>{theater.hotline}</Td>
                                 <Td>
                                     <Flex justify="flex-end">
                                         <Button
@@ -168,7 +163,7 @@ const TheaterPage = () => {
             )}
             <MyAlertDialog
                 title="Xóa nhân viên"
-                content={`Bạn có chắc chắn muốn xóa nhân viên "${theaterToDisable?.name}" không?`}
+                content={`Bạn có chắc chắn muốn xóa rạp chiếu "${theaterToDisable?.name}" không?`}
                 isOpen={isAlertOpen}
                 onClose={handleAlertClose}
                 onConfirm={handleConfirmDisable}

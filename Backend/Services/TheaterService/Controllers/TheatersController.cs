@@ -48,12 +48,32 @@ namespace TheaterService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTheater(int id, TheaterReadDto theaterUpdateDto)
         {
-            if (id != theaterUpdateDto.Id)
+
+            var theater = await _context.Theaters.FindAsync(id);
+            if (theater == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            var theater = _mapper.Map<Theater>(theaterUpdateDto);
+            // Map the updates from theaterUpdateDto to the existing Theater entity
+            _mapper.Map(theaterUpdateDto, theater);
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        [HttpPut("{id}/disable")]
+        public async Task<IActionResult> DisableTheater(int id)
+        {
+            var theater = await _context.Theaters.FindAsync(id);
+
+            if (theater == null)
+            {
+                return NotFound();
+            }
+
+            theater.Status = "Inactive";
             _context.Entry(theater).State = EntityState.Modified;
 
             try
@@ -74,7 +94,6 @@ namespace TheaterService.Controllers
 
             return NoContent();
         }
-
         // POST: api/Theaters
         [HttpPost]
         public async Task<ActionResult<TheaterReadDto>> PostTheater(TheaterCreateDto theaterCreateDto)

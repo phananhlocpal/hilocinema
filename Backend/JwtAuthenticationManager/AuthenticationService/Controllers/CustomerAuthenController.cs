@@ -17,8 +17,8 @@ namespace AuthenticationService.Controllers
         private readonly JwtTokenHandler _jwtTokenHandler;
         private readonly IMapper _mapper;
         private readonly ICustomerRepo _repository;
-        private readonly ILogger _logger;
-        public CustomerAuthenController(JwtTokenHandler jwtTokenHandler, IMapper mapper, ICustomerRepo repository, ILogger logger)
+        private readonly ILogger<CustomerAuthenController> _logger;
+        public CustomerAuthenController(JwtTokenHandler jwtTokenHandler, IMapper mapper, ICustomerRepo repository, ILogger<CustomerAuthenController> logger)
         {
             _jwtTokenHandler = jwtTokenHandler;
             _mapper = mapper;
