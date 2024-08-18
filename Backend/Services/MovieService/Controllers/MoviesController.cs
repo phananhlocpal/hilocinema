@@ -25,7 +25,7 @@ namespace MovieService.Controllers
 
         // GET: api/movies
         [HttpGet]
-        [Authorize(Policy = "AllCanAccess")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<MovieReadDto>>> GetAllMovies()
         {
             var movies = await _repository.GetAllAsync();
@@ -34,7 +34,7 @@ namespace MovieService.Controllers
 
         // GET: api/movies/{id}
         [HttpGet("{id}")]
-        [Authorize(Policy = "AdminOnly")]
+        [AllowAnonymous]
         public async Task<ActionResult<MovieReadDto>> GetMovieById(int id)
         {
             var movie = await _repository.GetByIdAsync(id);
@@ -47,7 +47,7 @@ namespace MovieService.Controllers
 
         // GET: api/movies/url/{url}
         [HttpGet("url/{url}")]
-        [Authorize(Policy = "AllCanAccess")]
+        [AllowAnonymous]
         public async Task<ActionResult<MovieReadDto>> GetMovieByUrl(string url)
         {
             var movie = await _repository.GetByUrlAsync(url);
@@ -60,7 +60,7 @@ namespace MovieService.Controllers
 
         // POST: api/movies
         [HttpPost]
-        [Authorize(Policy = "AllCanAccess")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<MovieReadDto>> CreateMovie(MovieCreateDto movieCreateDto)
         {
             var movieModel = _mapper.Map<Movie>(movieCreateDto);

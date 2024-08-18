@@ -36,7 +36,7 @@ namespace SaleService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting all foods");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error getting all foods");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error getting all foods. {ex}");
             }
         }
 

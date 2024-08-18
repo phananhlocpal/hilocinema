@@ -1,5 +1,5 @@
 ﻿// reducers/movieReducer.js
-import { FETCH_MOVIE_REQUEST, FETCH_MOVIE_SUCCESS, FETCH_MOVIE_FAILURE } from '../actions/movieDetailAction';
+import { FETCH_MOVIE_REQUEST, FETCH_MOVIE_SUCCESS, FETCH_MOVIE_FAILURE } from '../../actions/movieDetail/movieDetailAction';
 
 const initialState = {
     movie: null,
@@ -10,11 +10,11 @@ const initialState = {
 const movieDetailReducer = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_MOVIE_REQUEST:
-            return { ...state, loading: true };
+            return { ...state, loading: true, error: null };
         case FETCH_MOVIE_SUCCESS:
-            return { ...state, loading: false, movie: action.payload };
+            return { ...state, movie: action.payload, loading: false };
         case FETCH_MOVIE_FAILURE:
-            return { ...state, loading: false, error: action.error };
+            return { ...state, error: action.error, loading: false };
         default:
             return state;
     }

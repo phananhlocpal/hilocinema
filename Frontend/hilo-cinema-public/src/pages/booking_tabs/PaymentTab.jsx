@@ -20,7 +20,7 @@ const PaymentTab = () => {
   return (
     <div className="col-span-2 xl:order-first order-last xl:h-full h-full overflow-hidden xl:overflow-auto xl:pb-10 pb-32">
       <div className="bg-white p-4">
-        <h3 className="text-l mb-4 font-semibold">Khuyến mãi</h3>
+        <h1 className="text-3xl mb-4 font-semibold">Khuyến mãi</h1>
         <div className="md:mt-4 mt-2">
           <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
             <div className="mt-4 grid grid-cols-2 gap-4 xl:w-2/3 w-full">
@@ -39,7 +39,7 @@ const PaymentTab = () => {
             <p className="text-s text-grey-40 mt-2">Lưu ý: Có thể áp dụng nhiều vouchers vào 1 lần thanh toán</p>
           </form>
           <div className="md:mt-4 mt-2">
-            <div className="xl:w-2/3 w-full flex justify-between items-center cursor-pointer gap-4">
+            <div className="xl:w-2/3 w-full justify-between items-center cursor-pointer gap-4">
               <h4 className="inline-block mb-4 text-black-10 text-sm font-bold cursor-pointer flex-1">
                 Khuyến mãi của bạn{' '}
                 <span className="transition-all duration-300 ease-in-out">
@@ -48,11 +48,12 @@ const PaymentTab = () => {
                   </svg>
                 </span>
               </h4>
+              <p className="italic">Comming Soon</p>
             </div>
           </div>
         </div>
         <div className="md:mt-4 mt-2">
-          <div className="xl:w-2/3 w-full flex justify-between items-center cursor-pointer ap-4">
+          <div className="xl:w-2/3 w-full justify-between items-center cursor-pointer ap-4">
             <h4 className="inline-block mb-1 text-black-10 text-sm font-bold flex-1">
               Áp dụng điểm Stars{' '}
               <span className="transition-all duration-300 ease-in-out">
@@ -61,6 +62,7 @@ const PaymentTab = () => {
                 </svg>
               </span>
             </h4>
+            <p className="italic">Comming Soon</p>
           </div>
         </div>
       </div>
@@ -81,7 +83,7 @@ const PaymentTab = () => {
         </div>
         <div className="mt-8 text-sm">
           <strong className="text-red-10 font-semibold">(*) </strong>
-          <span>Bằng việc click/chạm vào THANH TOÁN bên phải, bạn đã xác nhận hiểu rõ các Quy Định Giao Dịch Trực Tuyến của Galaxy Cinema.</span>
+          <span>Bằng việc click/chạm vào THANH TOÁN bên phải, bạn đã xác nhận hiểu rõ các Quy Định Giao Dịch Trực Tuyến của Hilo Cinema.</span>
         </div>
       </div>
     </div>

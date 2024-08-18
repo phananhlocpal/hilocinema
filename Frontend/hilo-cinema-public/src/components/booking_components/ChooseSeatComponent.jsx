@@ -1,24 +1,62 @@
-﻿import { useSelector, useDispatch } from "react-redux";
+﻿import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 import { selectSeat, deselectSeat } from "../../redux/actions/bookingAction";
 
-const ChooseSeatComponent = () => {
+const ChooseSeatComponent = ({ movieId, date, theaterId, roomId, time }) => {
   const dispatch = useDispatch();
-  const cinemaData = useSelector((state) => state.booking.cinemaData);
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
 
+  const [cinemaData, setCinemaData] = useState(null);
+
+  useEffect(() => {
+    const fetchSeats = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/ScheduleService/getSeatsBySchedule?movieId=${movieId}&date=${date}&theaterId=${theaterId}&roomId=${roomId}&time=${time}`);
+        const data = await response.json();
+        console.log(data)
+        setCinemaData({
+          row: data.room.rowNum,
+          col: data.room.colNum,
+          seats: data.seats.map(seat => ({
+            seatId: seat.id,
+            row: String.fromCharCode(65 + (seat.rowSeat - 1)),
+            col: seat.colSeat,
+            name: `${String.fromCharCode(65 + (seat.rowSeat - 1))}${seat.colSeat}`,
+            type: seat.type,
+            status: seat.status,
+          })),
+        });
+      } catch (error) {
+        console.error("Error fetching seat data:", error);
+      }
+    };
+
+    fetchSeats();
+  }, [movieId, date, theaterId, roomId, time]);
+
   const handleSeatClick = (seat) => {
-    if (isSelected(seat)) {
-      dispatch(deselectSeat(seat));
+    const newSeat = {
+      seatType: seat.type,
+      seatId: seat.seatId,
+      seatName: seat.name,
+    };
+    console.log(newSeat)
+    if (isSelected(newSeat)) {
+      dispatch(deselectSeat(newSeat));
     } else {
-      dispatch(selectSeat(seat));
+      dispatch(selectSeat(newSeat));
     }
   };
 
   const isSelected = (seat) => {
     return selectedSeats.some(
-      (selectedSeat) => selectedSeat.name === seat?.name
+      (selectedSeat) => selectedSeat.seatId === seat?.seatId
     );
   };
+
+  if (!cinemaData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="bg-white md:px-6 py-4 px-2 rounded md:mb-8 w-full">
@@ -41,22 +79,22 @@ const ChooseSeatComponent = () => {
                         seat.row === rowLabel && seat.col === colIndex + 1
                     );
 
-                    const isInvisible = seat?.status === "invisible";
-                    const isDisavailable = seat?.status === "disavailable";
+                    const isInvisible = seat?.status === "Invisible";
+                    const isDisavailable = seat?.status === "Disavailable";
                     const isSelected = selectedSeats.some(
-                      (selectedSeat) => selectedSeat.name === seat?.name
+                      (selectedSeat) => selectedSeat.seatId === seat?.seatId
                     );
 
                     return (
                       <button
                         key={colIndex}
                         className={`md:h-5 h-4 border rounded md:text-s text-[10px] transition duration-200 ease-in-out ${isInvisible
-                            ? "invisible"
-                            : isDisavailable
-                              ? "bg-[#D0D0D0] border-[#D0D0D0]"
-                              : isSelected
-                                ? "text-white bg-primary border-primary"
-                                : "text-white border-grey-20 xl:hover:bg-primary xl:hover:border-primary"
+                          ? "Invisible"
+                          : isDisavailable
+                            ? "bg-[#D0D0D0] border-[#D0D0D0]"
+                            : isSelected
+                              ? "text-white bg-primary border-primary"
+                              : "text-white border-grey-20 xl:hover:bg-primary xl:hover:border-primary"
                           } md:w-5 w-4`}
                         disabled={isDisavailable}
                         onClick={() => handleSeatClick(seat)}

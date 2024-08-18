@@ -1,9 +1,53 @@
 ﻿import { useSelector } from 'react-redux';
 import PropTypes from "prop-types";
+import axios from 'axios';
 
 const BookingSummary = (props) => {
     const movieBooking = useSelector((state) => state.booking.movieBooking);
     const totalAmount = useSelector((state) => state.booking.totalAmount);
+    const selectedSeats = useSelector((state) => state.booking.selectedSeats);
+    const foodList = useSelector((state) => state.booking.foodList);
+
+    const handleSeatPayment = (invoice) => {
+        axios.post('http://localhost:8000/Service/createInvoice', invoice)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    const payment = () => {
+        const invoice = {
+            customerId: 1, // Thay đổi theo thông tin thực tế
+            employeeId: 0,
+            promotionId: null,
+            paymentMethod: "VNPAY",
+            total: totalAmount,
+            status: "Pending",
+            revenue_date: new Date().toISOString().split('T')[0],
+        };
+    
+        axios.post('http://localhost:8000/PaymentService/createInvoice', invoice)
+            .then(response => {
+                window.location.href = response.data.redirectUrl; // Redirect to VNPAY payment page
+            })
+            .catch(error => {
+                console.error('Error creating payment:', error);
+            });
+    };
+    
+
+    const selectedFood = foodList
+        .filter(item => item.quantity > 0) // Keep only items with quantity > 0
+        .map(item => ({
+            foodId: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+        }));
+    console.log(selectedFood);
 
     console.log(totalAmount);
     return (
@@ -45,53 +89,40 @@ const BookingSummary = (props) => {
                         </div>
                     </div>
                     <div className="xl:block hidden">
-                        <div className="my-4 border-t border-black border-dashed xl:block hidden"></div>
-                        <div className="flex justify-between text-sm mt-2">
-                            <div>
-                                <strong>2x </strong>
-                                <span>Ghế đơn</span>
-                                <div>
-                                    <span>Ghế: </span>
-                                    <strong>I16, I17</strong>
-                                </div>
-                            </div>
-                            <span className="inline-block font-bold ">190.000&nbsp;₫</span>
+                        <div
+                            className={`my-4 border-t border-black border-dashed ${selectedSeats.length === 0 ? 'hidden' : 'xl:block'}`}
+                        >
                         </div>
-                        <div className="flex justify-between text-sm mt-2">
-                            <div>
-                                <strong>1x </strong>
-                                <span>Ghế đôi</span>
+                        {selectedSeats.map((seat, index) => (
+                            <div key={index} className="flex justify-between text-sm mt-2">
                                 <div>
-                                    <span>Ghế: </span>
-                                    <strong>I16, I17</strong>
+                                    <strong>1x </strong>
+                                    <span>{seat.seatType === 'Normal' ? 'Ghế đơn' : 'Ghế đôi'}</span>
+                                    <div>
+                                        <span>Ghế: </span>
+                                        <strong>{seat.seatName}</strong>
+                                    </div>
                                 </div>
+                                <span className="inline-block font-bold ">75.000&nbsp;₫</span>
                             </div>
-                            <span className="inline-block font-bold ">190.000&nbsp;₫</span>
-                        </div>
+                        ))}
                     </div>
                     <div className="xl:block hidden">
-                        <div className="my-4 border-t border-black border-dashed xl:block hidden"></div>
-                        <div className="flex justify-between text-sm">
-                            <span>
-                                <strong>1x </strong>
-                                <span>iCombo 2 Big Extra STD</span>
-                            </span>
-                            <span className="inline-block font-bold ">129.000&nbsp;₫</span>
+                        <div
+                            className={`my-4 border-t border-black border-dashed ${selectedFood.length === 0 ? 'hidden' : 'xl:block'}`}
+                        >
                         </div>
-                        <div className="flex justify-between text-sm">
-                            <span>
-                                <strong>1x </strong>
-                                <span>iCombo 2 Big STD</span>
-                            </span>
-                            <span className="inline-block font-bold ">109.000&nbsp;₫</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                            <span>
-                                <strong>1x </strong>
-                                <span>iCombo Optimus Prime Promotion 199K</span>
-                            </span>
-                            <span className="inline-block font-bold ">199.000&nbsp;₫</span>
-                        </div>
+                        {
+                            selectedFood.map((food, index) => (
+                                <div key={index} className="flex justify-between text-sm">
+                                    <span>
+                                        <strong>{food.quantity}x </strong>
+                                        <span>{food.name}</span>
+                                    </span>
+                                    <span className="inline-block font-bold ">{food.quantity*food.price}&nbsp;₫</span>
+                                </div>
+                            ))
+                        }
                     </div>
                     <div className="my-4 border-t border-black border-dashed xl:block hidden"></div>
                 </div>
@@ -109,6 +140,9 @@ const BookingSummary = (props) => {
                 <button onClick={props.onContinue} className="w-1/2 ml-2 py-2 bg-primary text-white border rounded-md hover:bg-orange-20">
                     <span>Tiếp tục</span>
                 </button>
+                <button onClick={payment} className="w-1/2 ml-2 py-2 bg-primary text-white border rounded-md hover:bg-orange-20 ">
+                    <span>Thanh toán</span>
+                </button>
             </div>
         </div>
     );
@@ -116,7 +150,30 @@ const BookingSummary = (props) => {
 
 BookingSummary.propTypes = {
     onContinue: PropTypes.func,
-    comeBack:PropTypes.func,
+    comeBack: PropTypes.func,
+    seats: [
+        {
+            movie_id: PropTypes.number,
+            date: PropTypes.date,
+            time: PropTypes.time,
+            seat_id: PropTypes.number,
+        }
+    ],
+    foods: [
+        {
+            foodId: PropTypes.number,
+            quantity: PropTypes.number,
+        }
+    ],
+    invoice: {
+        customerId: PropTypes.number,
+        employeeId: 0,
+        promotionId: null,
+        paymentMethod: "VNPAY",
+        total: 0,
+        status: "Done",
+        revenue_date: new Date().toISOString().split('T')[0],
+    }
 }
 
 

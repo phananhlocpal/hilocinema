@@ -1,4 +1,4 @@
-﻿const initialState = {
+﻿const draft = {
     carouselImages: [
         { src: 'https://cdn.galaxycine.vn/media/2024/5/27/2048_1716778970480.jpg' },
         { src: 'https://cdn.galaxycine.vn/media/2024/6/13/tw-2048_1718252049014.jpg' },
@@ -67,27 +67,35 @@
     ],
     tabValue: 0,
     recentMovieList: [
-        { id: 1, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg'},
-        { id: 2, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg'},
+        { id: 1, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg' },
+        { id: 2, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg' },
         { id: 3, title: 'Cửu Long Thành Trại: Vây Thành', img: 'https://cdn.galaxycine.vn/media/2024/6/3/cuu-long-thanh-trai-vay-thanh-1_1717402596500.jpg' },
         { id: 4, title: 'Những Gã Trai Hư: Chơi Hay Bị Xơi', img: 'https://cdn.galaxycine.vn/media/2024/6/5/bad-boy-500_1717559748357.jpg' },
-        { id: 5, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg'},
-        { id: 6, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg'},
+        { id: 5, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg' },
+        { id: 6, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg' },
         { id: 7, title: 'Cửu Long Thành Trại: Vây Thành', img: 'https://cdn.galaxycine.vn/media/2024/6/3/cuu-long-thanh-trai-vay-thanh-1_1717402596500.jpg' },
         { id: 8, title: 'Những Gã Trai Hư: Chơi Hay Bị Xơi', img: 'https://cdn.galaxycine.vn/media/2024/6/5/bad-boy-500_1717559748357.jpg' }
     ],
-    upcommingMovieList : [
+    upcommingMovieList: [
         { id: 1, title: 'Những Gã Trai Hư: Chơi Hay Bị Xơi', img: 'https://cdn.galaxycine.vn/media/2024/6/5/bad-boy-500_1717559748357.jpg' },
         { id: 2, title: 'Cửu Long Thành Trại: Vây Thành', img: 'https://cdn.galaxycine.vn/media/2024/6/3/cuu-long-thanh-trai-vay-thanh-1_1717402596500.jpg' },
-        { id: 3, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg'},
-        { id: 4, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg'},
+        { id: 3, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg' },
+        { id: 4, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg' },
         { id: 5, title: 'Những Gã Trai Hư: Chơi Hay Bị Xơi', img: 'https://cdn.galaxycine.vn/media/2024/6/5/bad-boy-500_1717559748357.jpg' },
         { id: 6, title: 'Cửu Long Thành Trại: Vây Thành', img: 'https://cdn.galaxycine.vn/media/2024/6/3/cuu-long-thanh-trai-vay-thanh-1_1717402596500.jpg' },
-        { id: 7, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg'},
-        { id: 8, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg'},
-       
+        { id: 7, title: 'Thầy trừ tà', img: 'https://cdn.galaxycine.vn/media/2024/6/5/exorcim-500_1717573379987.jpg' },
+        { id: 8, title: 'Những mảnh ghép cảm xúc 2', img: 'https://cdn.galaxycine.vn/media/2024/5/6/inside-out-2-3_1714970461256.jpg' },
+
     ],
 }
+
+import { SET_TAB, SET_RECENT_MOVIES } from '../actions/homeAction.js';
+
+const initialState = {
+    tabValue: 0,
+    recentMovieList: [],
+    upcommingMovieList: [], 
+};
 
 const homeReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -106,14 +114,19 @@ const homeReducer = (state = initialState, action) => {
                 ...state,
                 blogs: action.payload,
             };
-        case "SET_TAB":
+        case SET_TAB:
             return {
                 ...state,
                 tabValue: action.payload,
             };
+        case SET_RECENT_MOVIES:
+            return {
+                ...state,
+                recentMovieList: action.payload,
+            };
         default:
             return state;
     }
-}
+};
 
 export default homeReducer;

@@ -20,7 +20,7 @@ const MovieContent = ({ movieModel }) => {
                         <em>
                             <a href="https://www.galaxycine.vn/">rạp chiếu phim</a>
                         </em>{" "}
-                        toàn quốc từ 14.06.2024.
+                        toàn quốc từ {movieModel.releasedDate}.
                     </span>
                 </p>
                 <p>&nbsp;</p>

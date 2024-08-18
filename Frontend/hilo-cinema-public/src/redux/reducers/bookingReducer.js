@@ -1,7 +1,16 @@
-﻿import { exampleCinemaSeat } from "../../../data_example";
+﻿import { 
+  SET_VOUCHER, 
+  SET_PAYMENT_METHOD, 
+  SET_STARS, 
+  SELECT_SEAT, 
+  DESELECT_SEAT, 
+  SELECT_FOOD, 
+  SET_CINEMA_DATA, 
+  SET_FOOD_LIST,
+} from '../actions/bookingAction';
 
 const initialState = {
-  cinemaData: exampleCinemaSeat,
+  cinemaData: null, // This will be updated after fetching data
   movieBooking: {
     title: 'Example Movie',
     type: '2D',
@@ -12,56 +21,83 @@ const initialState = {
   },
   selectedSeats: [],
   totalAmount: 0,
-  foodList: [
-    { id: 1, title: 'Popcorn', description: 'Large popcorn', price: 50000, quantity: 0, image: 'https://www.simplyrecipes.com/thmb/Xzggu-Md45HKhhYSw4DK8tGlZ_I=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Perfect-Popcorn-LEAD-41-4a75a18443ae45aa96053f30a3ed0a6b.JPG' },
-    { id: 2, title: 'Coke', description: 'Large coke', price: 30000, quantity: 0, image: 'https://www.simplyrecipes.com/thmb/Xzggu-Md45HKhhYSw4DK8tGlZ_I=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Perfect-Popcorn-LEAD-41-4a75a18443ae45aa96053f30a3ed0a6b.JPG' },
-  ],
+  foodList: [],
   voucher: '',
   paymentMethod: '',
   stars: 0,
   paymentMethods: [
-    // Example data; replace with your actual data
-    { value: 'creditCard', label: 'Credit Card', image: 'creditCard.jpg', checked: false },
-    { value: 'paypal', label: 'PayPal', image: 'paypal.jpg', checked: false },
-    // Add more payment methods as needed
+    { value: 'vnpay', label: 'VNPAY', image: 'https://stcd02206177151.cloud.edgevnpay.vn/assets/images/logo-icon/logo-primary.svg', checked: true },
   ],
 };
 
 const bookingReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SELECT_SEAT": {
-      const seat = action.payload;
-      const seatPrice = seat.type === 'VIP' ? 100000 : seat.type === 'Double' ? 150000 : 75000;
+    case SET_CINEMA_DATA:
       return {
         ...state,
-        selectedSeats: [...state.selectedSeats, seat],
-        totalAmount: state.totalAmount + seatPrice,
+        cinemaData: action.payload,
       };
-    }
-    case "DESELECT_SEAT": {
-      const seat = action.payload;
-      const seatPrice = seat.type === 'VIP' ? 100000 : seat.type === 'Double' ? 150000 : 75000;
+      case SELECT_SEAT: {
+        const seat = action.payload;
+        const seatPrice = seat.seatType === 'VIP' ? 100000 : seat.seatType === 'Couple' ? 150000 : 75000;
+        return {
+          ...state,
+          selectedSeats: [
+            ...state.selectedSeats,
+            {
+              movieId: state.movieBooking.movieId,
+              date: state.movieBooking.date,
+              time: state.movieBooking.time,
+              seatId: seat.seatId, 
+              seatName: seat.seatName,
+            }
+          ],
+          totalAmount: state.totalAmount + seatPrice,
+        };
+      }
+      case DESELECT_SEAT: {
+        const seat = action.payload;
+        const seatPrice = seat.seatType === 'VIP' ? 100000 : seat.seatType === 'Double' ? 150000 : 75000;
+        return {
+          ...state,
+          selectedSeats: state.selectedSeats.filter(
+            selectedSeat => selectedSeat.seatId !== seat.seatId 
+          ),
+          totalAmount: state.totalAmount - seatPrice,
+        };
+      }
+    case SET_FOOD_LIST:
       return {
         ...state,
-        selectedSeats: state.selectedSeats.filter(selectedSeat => selectedSeat.name !== seat.name),
-        totalAmount: state.totalAmount - seatPrice,
+        foodList: action.payload,
       };
-    }
-    case 'SELECT_FOOD':
-      return {
-        ...state,
-        foodList: state.foodList.map((foodItem) =>
+      case SELECT_FOOD: {
+        const updatedFoodList = state.foodList.map((foodItem) =>
           foodItem.id === action.payload.foodId
             ? { ...foodItem, quantity: action.payload.quantity }
             : foodItem
-        ),
-      };
-    case "SET_VOUCHER":
+        );
+        
+        // Calculate new total amount based on updated food list
+        const newTotalAmount = updatedFoodList.reduce((total, foodItem) => {
+          return total + (foodItem.quantity * foodItem.price);
+        }, state.selectedSeats.reduce((total, seat) => {
+          const seatPrice = seat.seatType === 'VIP' ? 100000 : seat.seatType === 'Couple' ? 150000 : 75000;
+          return total + seatPrice;
+        }, 0));
+        
+        return {
+          ...state,
+          foodList: updatedFoodList,
+          totalAmount: newTotalAmount,
+        };
+      }
+    case SET_VOUCHER:
       return {
         ...state,
         voucher: action.payload,
       };
-    case "SET_PAYMENT_METHOD":
+    case SET_PAYMENT_METHOD:
       return {
         ...state,
         paymentMethod: action.payload,
@@ -71,7 +107,7 @@ const bookingReducer = (state = initialState, action) => {
             : { ...method, checked: false }
         ),
       };
-    case "SET_STARS":
+    case SET_STARS:
       return {
         ...state,
         stars: action.payload,
@@ -82,5 +118,3 @@ const bookingReducer = (state = initialState, action) => {
 };
 
 export default bookingReducer;
-
-

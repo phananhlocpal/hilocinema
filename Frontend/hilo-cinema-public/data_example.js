@@ -5,38 +5,16 @@ export const exampleSchedule = [
         detailSchedule: [
             {
                 theater: "Galaxy Nguyễn Du",
-                schedules: [
-                    {
-                        type: "2D Phụ Đề",
-                        times: ["11:00", "15:15", "17:15", "20:15"]
-                    },
-                    {
-                        type: "3D Dubbing",
-                        times: ["12:00", "14:30", "18:00", "21:00"]
-                    }
-                ]
+                times: ["11:00", "15:15", "17:15", "20:15"]
+        
             },
             {
                 theater: "Galaxy Tân Bình",
-                schedules: [
-                    {
-                        type: "2D Lồng Tiếng",
-                        times: ["09:00", "10:00", "12:15", "14:15", "16:15", "18:15", "19:15"]
-                    }
-                ]
+                times: ["11:00", "15:15", "17:15", "20:15"]
             },
             {
                 theater: "Galaxy Sala",
-                schedules: [
-                    {
-                        type: "IMAX 2D Phụ Đề",
-                        times: ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"]
-                    },
-                    {
-                        type: "2D Lồng Tiếng",
-                        times: ["11:00", "15:00", "19:00"]
-                    }
-                ]
+                times: ["11:00", "15:15", "17:15", "20:15"]
             }
         ]
     },
@@ -45,25 +23,11 @@ export const exampleSchedule = [
         detailSchedule: [
             {
                 theater: "Galaxy Tân Bình",
-                schedules: [
-                    {
-                        type: "2D Lồng Tiếng",
-                        times: ["09:00", "10:00", "12:15", "14:15", "16:15", "18:15", "19:15"]
-                    }
-                ]
+                times: ["11:00", "15:15", "17:15", "20:15"]
             },
             {
                 theater: "Galaxy Sala",
-                schedules: [
-                    {
-                        type: "IMAX 2D Phụ Đề",
-                        times: ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"]
-                    },
-                    {
-                        type: "2D Lồng Tiếng",
-                        times: ["11:00", "15:00", "19:00"]
-                    }
-                ]
+                times: ["11:00", "15:15", "17:15", "20:15"]
             }
         ]
     },

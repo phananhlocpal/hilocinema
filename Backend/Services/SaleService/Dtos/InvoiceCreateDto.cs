@@ -9,7 +9,7 @@ namespace SaleService.Dtos
         public int CustomerId { get; set; }
         public int? PromotionId { get; set; }
         public string? PaymentMethod { get; set; }
-        public int? Total { get; set; }
+        public float? Total { get; set; }
         public string? Status { get; set; }
         public IEnumerable<Schedule> Schedules { get; set; } // create invoice => update schedule
         public IEnumerable<InvoiceFoodCreateDto>? InvoiceFoods { get; set; }

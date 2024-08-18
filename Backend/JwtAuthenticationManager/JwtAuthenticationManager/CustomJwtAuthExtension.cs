@@ -42,15 +42,6 @@ namespace JwtAuthenticationManager
                 // Policy cho AdminEmployeeOnly (Chỉ dành cho admin và employee)
                 options.AddPolicy("AdminEmployeeOnly", policy =>
                     policy.RequireClaim("Site", "admin"));
-
-                // Policy cho AllCanAccess (Tất cả user có thể truy cập, không phân biệt role)
-                options.AddPolicy("AllCanAccess", policy =>
-                    policy.RequireAssertion(context =>
-                        context.User.HasClaim(c =>
-                            (c.Type == "Site" && c.Value == "admin") ||
-                            (c.Type == "Site" && c.Value == "public"))
-                    )
-                );
             });
         }
     }

@@ -1,6 +1,6 @@
 ﻿import ChooseSeatComponent from '../../components/booking_components/ChooseSeatComponent';
 
-const ChooseSeatTab = () => {
+const ChooseSeatTab = ({movieId, date, theaterId, roomId, time}) => {
     return (
         <div className="col-span-2 xl:order-first order-last xl:h-full h-full overflow-hidden xl:overflow-auto xl:pb-10 pb-32">
             <div className="bg-white px-6 py-4 rounded md:mb-8 mb-4 w-full">
@@ -34,7 +34,7 @@ const ChooseSeatTab = () => {
                     </div>
                 </div>
             </div>
-            <ChooseSeatComponent />
+            <ChooseSeatComponent movieId={movieId} date={date} theaterId={theaterId} roomId={roomId} time={time}/>
         </div>
     );
 };

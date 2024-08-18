@@ -3,38 +3,39 @@ import MovieChooseDateComponent from "../components/movieDetail_components/Movie
 import { exampleSchedule } from '../../data_example.js';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMovie } from '../redux/actions/movieDetailAction.js';
-import { authenticateUser } from "../redux/actions/authAction.js";
+import { fetchMovie } from '../redux/actions/movieDetail/movieDetailAction.js';
 import MovieContent from "../components/movieDetail_components/MovieContent.jsx";
 import MovieOverviewComponent from "../components/movieDetail_components/MovieOverviewComponent.jsx";
 import MovieSuggestionComponent from "../components/common_components/MovieSuggestionComponent.jsx";
 import { useParams } from "react-router-dom";
 
 const FilmDetail = () => {
-    const { movieUrl } = useParams(); 
+    const { movieUrl } = useParams();
     const dispatch = useDispatch();
     const { movie, loading, error } = useSelector((state) => state.movieDetail);
-    const [selectedDate, setSelectedDate] = useState(exampleSchedule[0].day); 
+    const { schedule } = useSelector((state) => state.schedule); 
+    const [selectedDate, setSelectedDate] = useState('');
+    const [dataLoaded, setDataLoaded] = useState(false);
 
     useEffect(() => {
-        const authenticateAndFetch = async () => {
-            const isAuthenticated = await dispatch(authenticateUser());
-            
-            if (isAuthenticated) {
-                dispatch(fetchMovie(movieUrl));
-            } else {
-                console.error("Authentication failed!");
+        const fetchData = async () => {
+            try {
+                await dispatch(fetchMovie(movieUrl));
+                setDataLoaded(true); 
+            } catch (err) {
+                console.error("Error fetching movie:", err);
+                setDataLoaded(false); 
             }
         };
-    
-        authenticateAndFetch();
+
+        fetchData();
     }, [dispatch, movieUrl]);
 
     useEffect(() => {
-        if (movie) {
-            console.log("Fetched movie details:", movie);
+        if (schedule.schedules && schedule.schedules.length > 0) {
+            setSelectedDate(schedule.schedules[0].date); 
         }
-    }, [movie]);
+    }, [schedule]);
 
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);
@@ -48,12 +49,12 @@ const FilmDetail = () => {
             <div className="book__ticket__wrapper">
                 <div className="relative bg-black flex justify-center w-full h-full">
                     {/* Movie Image and Play Button */}
-                    <div className="relative h-full ">
+                    <div className="relative h-full">
                         <img
                             alt="Img Movie"
                             loading="lazy"
                             className="w-[860px] h-full md:h-full lg:h-[500px] object-fill"
-                            src={movie?.Img_Large || 'https://via.placeholder.com/1440x440'}  // Fallback image if movie is null
+                            src={movie?.imgLarge ? `data:image/jpeg;base64,${movie.imgLarge}` : 'https://via.placeholder.com/1440x440'}  
                         />
                         <button className="absolute top-[50%] left-[50%] -translate-x-2/4 -translate-y-2/4 z-[600]">
                             <img
@@ -68,21 +69,23 @@ const FilmDetail = () => {
                 <div className="grid grid-cols-1 screen1200:grid-cols-7 my-0 mx-auto screen1390:max-w-screen-xl xl:max-w-screen-screen1200 lg:max-w-4xl md:max-w-4xl gap-8 py-7 md:px-4 px-4">
                     <div className="book__left lg:col-span-5 w-full ">
                         <div className="book__film flex flex-col">
-                            <MovieOverviewComponent movie = {movie} />
-                            <MovieContent movieModel={movie} />
+                            {dataLoaded && (
+                                <>
+                                    <MovieOverviewComponent movie={movie} />
+                                    <MovieContent movieModel={movie} />
+                                </>
+                            )}
                             <div className="movie__showtime">
                                 <div className="movie__showtime-header">
                                     <span className="border-l-4 border-solid border-blue-10 mr-2"></span>
                                     <h1 className="mb-4 text-base inline-block capitalize font-bold">Lịch chiếu</h1>
                                 </div>
                                 <MovieChooseDateComponent
-                                    schedule={exampleSchedule}
+                                    schedule={schedule.MovieSchedule} 
                                     selectedDate={selectedDate}
                                     onDateChange={handleDateChange}
                                 />
-                                <Schedule
-                                    data={exampleSchedule.find(item => item.day === selectedDate)?.detailSchedule || []}
-                                />
+                                <Schedule movieUrl={movieUrl} selectedDate={selectedDate} /> {/* Truyền selectedDate vào Schedule */}
                             </div>
                         </div>
                     </div>

@@ -55,6 +55,14 @@ namespace ScheduleService.Repositories.ScheduleRepository
             return await query.FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Schedule>> GetSeatsBySchedude(int movieId, DateOnly date, int theaterId, int roomId, TimeOnly time)
+        {
+            var query = await _context.Schedules
+                .Where(s=> s.MovieId == movieId && s.Date == date && s.Time == time)
+                .ToListAsync();
+            return query;
+        }
+
         public async Task<IEnumerable<Schedule>> GetScheduleByInvoiceIdAsync(int invoiceId)
         {
             var query = await _context.Schedules

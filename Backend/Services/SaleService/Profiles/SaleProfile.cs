@@ -12,6 +12,11 @@ namespace SaleService.Profiles
                 .ForMember(dest => dest.Id, opt => opt.Ignore()) // Id sẽ được tạo tự động bởi DB
                 .ForMember(dest => dest.InvoiceFoods, opt => opt.MapFrom(src => src.InvoiceFoods)); // Mapping InvoiceFoods nếu cần
 
+            CreateMap<Invoice, InvoiceReadDto>();
+
+            CreateMap<Food, FoodReadDto>();
+            CreateMap<FoodCreateDto, Food>();
+
 
 
         }

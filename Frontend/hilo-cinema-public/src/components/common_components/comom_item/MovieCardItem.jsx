@@ -1,22 +1,29 @@
 ﻿import { Payments } from '@mui/icons-material';
+import PropTypes from 'prop-types';
 
-// eslint-disable-next-line react/prop-types
-const MovieCardItem = ({widthCard = '140px', heightCard = '210px', title="N/A", imageUrl="" }) => {
+const MovieCardItem = ({ 
+  widthCard = '140px', 
+  heightCard = '210px', 
+  title = "N/A", 
+  imageUrl = "", 
+  href = "#", 
+  id 
+}) => {
     return (
-        <div className="list-none text-sm text-black py-2 transition-all duration-300">
-            <div className={"inline-block relative max-w-full w-["+widthCard+ "] h-[" + heightCard+ "]"}>
-                <div className="inline-block cursor-pointer rounded overflow-hidden card__movies max-w-full false ">
+        <div key={id} className="list-none text-sm text-black py-2 transition-all duration-300">
+            <div className="inline-block relative max-w-full" style={{ width: widthCard, height: heightCard }}>
+                <div className="inline-block cursor-pointer rounded overflow-hidden card__movies max-w-full false">
                     <div className="object-cover rounded relative card__img max-w-full">
                         <div className="absolute hidden md:block w-full h-full z-10 cursor-pointer bg-[#00000080] transition-all duration-300 ease-in-out opacity-0 hover:opacity-100">
                             <div className="card__hover__content flex flex-col justify-center items-center w-full h-full">
-                                <a type="button" className="text-white bg-[#f26b38] w-[120px] h-[40px] hover:bg-[#fb9440] rounded text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#fb9440] dark:focus:ring-[#fb9440]">
+                                <a href={`/chon-phim/${href}`} className="text-white bg-[#f26b38] w-[120px] h-[40px] hover:bg-[#fb9440] rounded text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#fb9440] dark:focus:ring-[#fb9440]">
                                     <Payments alt="Logo Buy Ticket" loading="lazy" width="20" height="20" decoding="async" data-nimg="1" className="mr-2"/>
                                     Mua vé
                                 </a>
                             </div>
                         </div>
-                        <a href="/dat-ve/inside-out-2/">
-                            <img alt="inside-out-2" loading="lazy" width={widthCard} height={heightCard} decoding="async" data-nimg="1" className="undefined object-cover duration-500 ease-in-out group-hover:opacity-100 scale-100 blur-0 grayscale-0)" src={imageUrl} />
+                        <a href={`/chon-phim/${href}`}>
+                            <img alt={title} loading="lazy" style={{ width: widthCard, height: heightCard }} decoding="async" data-nimg="1" className="undefined object-cover duration-500 ease-in-out group-hover:opacity-100 scale-100 blur-0 grayscale-0" src={imageUrl} />
                         </a>
                         <div className="votes">
                             <p className="absolute right-[5px] bottom-10">
@@ -30,12 +37,21 @@ const MovieCardItem = ({widthCard = '140px', heightCard = '210px', title="N/A", 
                         </div>
                     </div>
                 </div>
-                <div className="Card_card__title__kFoFc mt-2" >
-                    <a type="button" className="text-sm font-semibold not-italic w-[140px] overflow-hidden" href="/dat-ve/inside-out-2/">{title}</a>
+                <div className="Card_card__title mt-2">
+                    <a href={`/chon-phim/${href}`} className="text-sm font-semibold not-italic w-[140px] overflow-hidden">{title}</a>
                 </div>
             </div>
         </div>
     );
 };
+
+MovieCardItem.propTypes = {
+    widthCard: PropTypes.string,
+    heightCard: PropTypes.string,
+    title: PropTypes.string,
+    imageUrl: PropTypes.string,
+    href: PropTypes.string,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+}
 
 export default MovieCardItem;

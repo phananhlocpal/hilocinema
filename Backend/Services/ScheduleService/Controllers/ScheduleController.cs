@@ -48,22 +48,27 @@ namespace ScheduleService.Controllers
             foreach (var schedule in schedules)
             {
                 var movie = await _movieHttpService.GetMovieById(schedule.MovieId);
-                var seat = await _theaterHttpService.GetSeatById(schedule.SeatId);
-                var room = (seat != null) ? await _theaterHttpService.GetRoomById(seat.RoomId) : null;
-                var theater = (room != null) ? await _theaterHttpService.GetTheaterById(room.TheaterId) : null;
-                var invoice = (schedule != null) ? await _invoiceHttpService.GetInvoiceById(schedule.InvoiceId.Value) : null;
+                Seat seat = await _theaterHttpService.GetSeatById(schedule.SeatId);
+                Room room = (seat != null) ? await _theaterHttpService.GetRoomById(seat.RoomId) : null;
+                Theater theater = (room != null) ? await _theaterHttpService.GetTheaterById(room.TheaterId) : null;
+
+                var invoiceId = schedule.InvoiceId.GetValueOrDefault();
+                var invoice = (schedule.InvoiceId.HasValue) ? await _invoiceHttpService.GetInvoiceById(invoiceId) : null;
 
                 room.Theater = theater;
                 seat.Room = room;
 
                 var scheduleReadDto = new ScheduleReadDto
                 {
-                    MovieId = schedule.MovieId,
                     Date = schedule.Date,
                     Time = schedule.Time,
-                    SeatId = schedule.SeatId,
                     InvoiceId = schedule.InvoiceId,
-                    Movie = movie,
+                    Movie = new Movie
+                    {
+                        Id = movie.Id,
+                        Title = movie.Title,
+                        MovieUrl = movie.MovieUrl,
+                    },
                     Seat = seat,
                     Invoice = invoice,
                 };
@@ -72,6 +77,38 @@ namespace ScheduleService.Controllers
             }
 
             return Ok(scheduleReadDtos);
+        }
+
+        [HttpGet("getSeatsBySchedule")]
+        public async Task<ActionResult<IEnumerable<object>>> GetSeatsBySchedude( int movieId, DateOnly date, int theaterId, int roomId, TimeOnly time)
+        {
+            var schedules = await _repository.GetSeatsBySchedude(movieId, date, theaterId, roomId, time);
+            var room = await _theaterHttpService.GetRoomById(roomId);
+            var theater = await _theaterHttpService.GetTheaterById(theaterId);
+
+
+            var seats = new List<object>();
+
+            foreach (var schedule in schedules)
+            {
+                var seat = await _theaterHttpService.GetSeatById(schedule.SeatId);
+                if (seat.RoomId == roomId)
+                {
+                    seats.Add(seat);
+                }
+
+            }
+
+            object result = new
+            {
+                Room = room,
+                Theater = theater,
+                Schedules = schedules,
+                Seats = seats,
+            };
+
+            return Ok(result);
+
         }
 
         [HttpGet("GetOnlyScheduleWithoutSeats")]
@@ -87,11 +124,15 @@ namespace ScheduleService.Controllers
 
                 var scheduleReadDto = new ScheduleReadDto
                 {
-                    MovieId = schedule.MovieId,
                     Date = schedule.Date,
                     Time = schedule.Time,
-                    SeatId = schedule.SeatId,
-                    Movie = movie,
+                    InvoiceId = schedule.InvoiceId,
+                    Movie = new Movie
+                    {
+                        Id = movie.Id,
+                        Title = movie.Title,
+                        MovieUrl = movie.MovieUrl,
+                    },
                 };
 
                 scheduleReadDtos.Add(scheduleReadDto);
@@ -111,7 +152,7 @@ namespace ScheduleService.Controllers
 
             var schedules = await _repository.GetSchedulesByMovieIdAsync(movie.Id);
 
-            var scheduleReadDtos = new List<ScheduleReadDto>();
+            var scheduleReadDtos = new List<object>();
 
             foreach (var schedule in schedules)
             {
@@ -119,23 +160,35 @@ namespace ScheduleService.Controllers
                 var room = (seat != null) ? await _theaterHttpService.GetRoomById(seat.RoomId) : null;
                 var theater = (room != null) ? await _theaterHttpService.GetTheaterById(room.TheaterId) : null;
 
+                var invoiceId = schedule.InvoiceId.GetValueOrDefault();
+                var invoice = (schedule.InvoiceId.HasValue) ? await _invoiceHttpService.GetInvoiceById(invoiceId) : null;
+
                 room.Theater = theater;
                 seat.Room = room;
 
-                var scheduleReadDto = new ScheduleReadDto
+                var scheduleReadDto = new 
                 {
-                    MovieId = schedule.MovieId,
                     Date = schedule.Date,
                     Time = schedule.Time,
-                    SeatId = schedule.SeatId,
-                    Movie = movie,
                     Seat = seat,
+                    Invoice = invoice,
                 };
 
                 scheduleReadDtos.Add(scheduleReadDto);
             }
 
-            return Ok(scheduleReadDtos);
+            object result = new
+            {
+                Movie = new 
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    MovieUrl = movie.MovieUrl,
+                },
+                schedules = scheduleReadDtos
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("GetScheduleByInvoiceId/{invoiceId}")]
@@ -145,7 +198,6 @@ namespace ScheduleService.Controllers
 
             return Ok(schedules);
         }
-
 
         // POST: api/schedule
         [HttpPost]

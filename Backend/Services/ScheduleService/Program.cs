@@ -13,22 +13,22 @@ builder.Services.AddSwaggerGen();
 // Register HttpClient for MovieService
 builder.Services.AddHttpClient("MovieService", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:5002/api/Movies/");
+    client.BaseAddress = new Uri("https://localhost:5001/api/Movies/");
 });
 
 builder.Services.AddHttpClient("SeatService", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5010/api/Seats/"); 
+    client.BaseAddress = new Uri("http://localhost:5002/api/Seats/"); 
 });
 
 builder.Services.AddHttpClient("TheaterService", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5010/api/Theaters/"); 
+    client.BaseAddress = new Uri("http://localhost:5002/api/Theaters/"); 
 });
 
 builder.Services.AddHttpClient("RoomService", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5010/api/Rooms/"); 
+    client.BaseAddress = new Uri("http://localhost:5002/api/Rooms/"); 
 });
 builder.Services.AddHttpClient("InvoiceService", client =>
 {
