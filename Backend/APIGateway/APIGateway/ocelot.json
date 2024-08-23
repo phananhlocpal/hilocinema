@@ -120,7 +120,7 @@
       "DownstreamPathTemplate": "/api/Theaters",
       "DownstreamScheme": "http",
       "UpstreamPathTemplate": "/TheaterService",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHttpMethod": [ "Get", "Post" ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -135,7 +135,7 @@
       "DownstreamPathTemplate": "/api/Theaters/{theaterId}",
       "DownstreamScheme": "http",
       "UpstreamPathTemplate": "/TheaterService/{theaterId}",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHttpMethod": [ "Get", "Put" ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",

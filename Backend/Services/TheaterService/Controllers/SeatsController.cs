@@ -30,6 +30,20 @@ namespace TheaterService.Controllers
             return Ok(_mapper.Map<IEnumerable<SeatReadDto>>(seats));
         }
 
+        // GET: api/Seats/GetSeatsByRoom/{roomId}
+        [HttpGet("GetSeatsByRoom/{roomId}")]
+        public async Task<ActionResult<IEnumerable<SeatReadDto>>> GetSeatsByRoom(int roomId)
+        {
+            var seats = await _context.Seats.Where(s => s.RoomId == roomId).ToListAsync();
+
+            if (seats == null || seats.Count == 0)
+            {
+                return NotFound("This room does not have seats, please add more seats");
+            }
+
+            return Ok(_mapper.Map<IEnumerable<SeatReadDto>>(seats));
+        }
+
         // GET: api/Seats/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SeatReadDto>> GetSeat(int id)
@@ -48,9 +62,19 @@ namespace TheaterService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSeat(int id, SeatCreateDto seatDto)
         {
+            var seat = await _context.Seats.FindAsync(id);
 
-            var seat = _mapper.Map<Seat>(seatDto);
-            _context.Entry(seat).State = EntityState.Modified;
+            if (seat == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật các thuộc tính của ghế từ DTO
+            seat.ColSeat = seatDto.ColSeat;
+            seat.RowSeat = seatDto.RowSeat;
+            seat.Name = seatDto.Name;
+            seat.Type = seatDto.Type;
+            seat.Status = seatDto.Status;
 
             try
             {
@@ -73,15 +97,15 @@ namespace TheaterService.Controllers
 
         // POST: api/Seats
         [HttpPost]
-        public async Task<ActionResult<SeatReadDto>> PostSeat(SeatCreateDto seatDto)
+        public async Task<ActionResult<IEnumerable<SeatReadDto>>> PostSeats(IEnumerable<SeatCreateDto> seatDtos)
         {
-            var seat = _mapper.Map<Seat>(seatDto);
-            _context.Seats.Add(seat);
+            var seats = _mapper.Map<IEnumerable<Seat>>(seatDtos);
+            _context.Seats.AddRange(seats);
             await _context.SaveChangesAsync();
 
-            var seatReadDto = _mapper.Map<SeatReadDto>(seat);
+            var seatReadDtos = _mapper.Map<IEnumerable<SeatReadDto>>(seats);
 
-            return CreatedAtAction("GetSeat", new { id = seatReadDto.Id }, seatReadDto);
+            return CreatedAtAction("GetSeats", seatReadDtos);
         }
 
         // DELETE: api/Seats/5
@@ -92,6 +116,12 @@ namespace TheaterService.Controllers
             if (seat == null)
             {
                 return NotFound();
+            }
+
+            // Ví dụ: không xóa ghế nếu trạng thái là 'in-use'
+            if (seat.Status == "Active")
+            {
+                return BadRequest("Seat is currently in use and cannot be deleted.");
             }
 
             _context.Seats.Remove(seat);
@@ -106,3 +136,4 @@ namespace TheaterService.Controllers
         }
     }
 }
+

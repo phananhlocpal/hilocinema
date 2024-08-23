@@ -1,7 +1,9 @@
 using AuthenticationService.Models;
 using AuthenticationService.Repositories;
 using AuthenticationService.Repositories.CustomerRepositories;
+using AuthenticationService.Repositories.EmployeeRepositories;
 using AuthenticationService.Services;
+using JwtAuthenticationManager;
 using MessageBrokerService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,7 @@ builder.Services.AddDbContext<AuthenticateContext>(options =>
 builder.Services.AddScoped<JwtTokenHandler>();
 builder.Services.AddScoped<JwtTokenHandlerEmp>();
 builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
+builder.Services.AddScoped<IEmployeeRepo, EmployeeRepo>();
 
 // Register singleton services
 builder.Services.AddSingleton<BaseMessageBroker>();
@@ -29,6 +32,8 @@ builder.Services.AddSingleton<CustomerAuthenticationConsumer>();
 builder.Services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<CustomerAuthenticationConsumer>());
 builder.Services.AddSingleton<EmployeeAuthenticationConsumer>();
 builder.Services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<EmployeeAuthenticationConsumer>());
+builder.Services.AddCustomJwtAuthentication();
+
 // Configure CORS policy
 builder.Services.AddCors(options =>
 {
@@ -59,6 +64,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAdmin");
 app.UseCors("AllowPublic");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

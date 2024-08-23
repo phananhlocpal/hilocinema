@@ -46,9 +46,8 @@ namespace TheaterService.Controllers
 
         // PUT: api/Theaters/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTheater(int id, TheaterReadDto theaterUpdateDto)
+        public async Task<IActionResult> PutTheater(int id, TheaterCreateDto theaterUpdateDto)
         {
-
             var theater = await _context.Theaters.FindAsync(id);
             if (theater == null)
             {
@@ -63,8 +62,10 @@ namespace TheaterService.Controllers
 
             return NoContent();
         }
-        [HttpPut("{id}/disable")]
-        public async Task<IActionResult> DisableTheater(int id)
+
+        // PUT: api/Theaters/Hide/{id}
+        [HttpPut("Hide/{id}")]
+        public async Task<IActionResult> HideTheater(int id)
         {
             var theater = await _context.Theaters.FindAsync(id);
 
@@ -73,7 +74,7 @@ namespace TheaterService.Controllers
                 return NotFound();
             }
 
-            theater.Status = "Inactive";
+            theater.Status = "Hidden";
             _context.Entry(theater).State = EntityState.Modified;
 
             try
@@ -94,6 +95,7 @@ namespace TheaterService.Controllers
 
             return NoContent();
         }
+
         // POST: api/Theaters
         [HttpPost]
         public async Task<ActionResult<TheaterReadDto>> PostTheater(TheaterCreateDto theaterCreateDto)

@@ -1,4 +1,5 @@
 ﻿using AuthenticationService.Dtos;
+using AuthenticationService.Helper;
 using AuthenticationService.Models;
 using AuthenticationService.Repositories;
 using AuthenticationService.Repositories.EmployeeRepositories;
@@ -6,7 +7,6 @@ using AutoMapper;
 using JwtAuthenticationManager;
 using JwtAuthenticationManager.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthenticationService.Controllers
@@ -18,12 +18,14 @@ namespace AuthenticationService.Controllers
         private readonly JwtTokenHandlerEmp _jwtTokenHandler;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IMapper _mapper;
-        public EmployeeAuthenController(JwtTokenHandlerEmp jwtTokenHandler, IEmployeeRepo employeeRepo, IMapper mapper)
+        private readonly ILogger<EmployeeAuthenController> _logger;
+
+        public EmployeeAuthenController(JwtTokenHandlerEmp jwtTokenHandler, IEmployeeRepo employeeRepo, IMapper mapper, ILogger<EmployeeAuthenController> logger)
         {
             _jwtTokenHandler = jwtTokenHandler;
             _employeeRepo = employeeRepo;
             _mapper = mapper;
-
+            _logger = logger;
         }
 
         [HttpPost("authenticate")]
@@ -34,14 +36,17 @@ namespace AuthenticationService.Controllers
             return authenticationResponse;
         }
 
-
-        //Employee
+        [HttpGet]
         [Authorize(Policy = "AdminEmployeeOnly")]
         public async Task<ActionResult<IEnumerable<EmployeeReadDto>>> GetAllEmployees()
         {
+            // Log the user's roles and claims
+            var userRoles = User.Claims.Where(c => c.Type == "role").Select(c => c.Value);
+            _logger.LogInformation("User Roles: " + string.Join(",", userRoles));
+
             try
             {
-                var employees = await _employeeRepo.();
+                var employees = await _employeeRepo.GetAllAsync();
                 var employeeDtos = _mapper.Map<IEnumerable<EmployeeReadDto>>(employees);
                 return Ok(employeeDtos);
             }
@@ -52,6 +57,7 @@ namespace AuthenticationService.Controllers
             }
         }
 
+        // Retrieve employee by ID
         [HttpGet("{id}", Name = "GetEmployeeById")]
         public async Task<ActionResult<EmployeeReadDto>> GetEmployeeById(int id)
         {
@@ -73,21 +79,26 @@ namespace AuthenticationService.Controllers
             }
         }
 
+        // Create new employee
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<EmployeeReadDto>> CreateEmployee(EmployeeCreateDto employeeCreateDto)
         {
             try
             {
-                // Set default password 
-                employeeCreateDto.Password = "hilocinema@2024";
+                // Check if email already exists
+                if (await _employeeRepo.EmailExistsAsync(employeeCreateDto.Email))
+                {
+                    return BadRequest("Email already exists.");
+                }
+
+                // Hash the password
+                employeeCreateDto.Password = PasswordHasher.HashPassword(employeeCreateDto.Password);
 
                 var employee = _mapper.Map<Employee>(employeeCreateDto);
                 await _employeeRepo.CreateAsync(employee);
                 var isSaved = await _employeeRepo.SaveChangesAsync();
 
-                // Send welcome email to employee
-                _emailService.WelcomeEmail(employee);
                 if (!isSaved)
                 {
                     return StatusCode(500, "Error saving employee to database.");
@@ -103,8 +114,10 @@ namespace AuthenticationService.Controllers
             }
         }
 
+        // Update employee details
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, EmployeeReadDto employeeUpdateDto)
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> UpdateEmployee(int id, EmployeeCreateDto employeeUpdateDto)
         {
             try
             {
@@ -114,6 +127,13 @@ namespace AuthenticationService.Controllers
                     return NotFound();
                 }
 
+                // Update password if provided
+                if (!string.IsNullOrEmpty(employeeUpdateDto.Password))
+                {
+                    existingEmployee.Password = PasswordHasher.HashPassword(employeeUpdateDto.Password);
+                }
+
+                // Update other fields
                 _mapper.Map(employeeUpdateDto, existingEmployee);
                 await _employeeRepo.UpdateAsync(existingEmployee);
                 var isSaved = await _employeeRepo.SaveChangesAsync();
@@ -128,6 +148,36 @@ namespace AuthenticationService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error updating employee with Id {id}.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        // Hide employee (soft delete)
+        [HttpPatch("{id}/hide")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> HideEmployee(int id)
+        {
+            try
+            {
+                var employee = await _employeeRepo.GetByIdAsync(id);
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+
+                await _employeeRepo.HideEmployeeAsync(id);
+                var isSaved = await _employeeRepo.SaveChangesAsync();
+
+                if (!isSaved)
+                {
+                    return StatusCode(500, "Error hiding employee in database.");
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error hiding employee with Id {id}.");
                 return StatusCode(500, "Internal server error.");
             }
         }

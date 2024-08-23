@@ -24,47 +24,32 @@ namespace EmployeeService.Repositories
 
         public async Task CreateAsync(Employee employee)
         {
-            if (employee == null)
-            {
-                throw new ArgumentNullException(nameof(employee));
-            }
-
             await _context.Employees.AddAsync(employee);
         }
 
         public async Task UpdateAsync(Employee employee)
         {
-            if (employee == null)
-            {
-                throw new ArgumentNullException(nameof(employee));
-            }
-
-            var existingEmployee = await _context.Employees.FindAsync(employee.Id);
-            if (existingEmployee == null)
-            {
-                throw new KeyNotFoundException($"Employee with Id {employee.Id} not found.");
-            }
-
-            // Update existing employee's properties
-            existingEmployee.Name = employee.Name;
-            existingEmployee.Email = employee.Email;
-            existingEmployee.Address = employee.Address;
-            existingEmployee.Phone = employee.Phone;
-            existingEmployee.Gender = employee.Gender;
-            existingEmployee.Birthdate = employee.Birthdate;
-            existingEmployee.Password = employee.Password;
-            existingEmployee.Position = employee.Position;
-            existingEmployee.SysRole = employee.SysRole;
-            existingEmployee.Token = employee.Token;
-            existingEmployee.CreatedDate = employee.CreatedDate;
-            existingEmployee.Status = employee.Status;
-
-            _context.Employees.Update(existingEmployee);
+            _context.Employees.Update(employee);
         }
 
         public async Task<bool> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync() >= 0;
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task HideEmployeeAsync(int id)
+        {
+            var employee = await GetByIdAsync(id);
+            if (employee != null)
+            {
+                employee.Status = "Inactive";
+                _context.Employees.Update(employee);
+            }
+        }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _context.Employees.AnyAsync(e => e.Email == email);
         }
     }
 }

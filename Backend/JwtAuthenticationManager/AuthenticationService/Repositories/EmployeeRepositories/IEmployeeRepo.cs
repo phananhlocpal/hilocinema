@@ -9,5 +9,7 @@ namespace AuthenticationService.Repositories.EmployeeRepositories
         Task CreateAsync(Employee employee);
         Task UpdateAsync(Employee employee);
         Task<bool> SaveChangesAsync();
+        Task HideEmployeeAsync(int id);
+        Task<bool> EmailExistsAsync(string email);
     }
 }

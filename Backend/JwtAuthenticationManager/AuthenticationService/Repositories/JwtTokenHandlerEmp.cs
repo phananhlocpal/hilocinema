@@ -38,10 +38,12 @@ namespace AuthenticationService.Repositories
             var tokenExpiryTimeStamp = DateTime.Now.AddMinutes(JWT_TOKEN_VALIDITY_MINS);
             var tokenKey = Encoding.ASCII.GetBytes(JWT_SECURITY_KEY);
             var claimsIdentity = new ClaimsIdentity(new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, authenticationRequest.Email),
-        new Claim("Site", "admin") // Thêm claim Site thay vì Role
-    });
+{
+    new Claim(JwtRegisteredClaimNames.Sub, authenticationRequest.Email),
+    new Claim("Site", userAccount.SysRole),
+     new Claim("Role", userAccount.SysRole),
+});
+
 
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(tokenKey),

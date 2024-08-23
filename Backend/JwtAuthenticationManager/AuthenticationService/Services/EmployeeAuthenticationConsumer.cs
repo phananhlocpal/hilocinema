@@ -85,8 +85,8 @@ namespace AuthenticationService.Services
 
         private async Task CreateEmployeeAuthen(Employee employee, IEmployeeRepo employeeRepo)
         {
-            await employeeRepo.CreateEmployeeAsync(employee);
-            await employeeRepo.SaveChangeAsync();
+            await employeeRepo.CreateAsync(employee);
+            await employeeRepo.SaveChangesAsync();
         }
     }
 }

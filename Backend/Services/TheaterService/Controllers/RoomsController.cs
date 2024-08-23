@@ -44,11 +44,38 @@ namespace TheaterService.Controllers
             return Ok(_mapper.Map<RoomReadDto>(room));
         }
 
+        // GET: api/Rooms/GetRoomByTheater/1
+        [HttpGet("GetRoomByTheater/{theaterId}")]
+        public async Task<ActionResult<IEnumerable<RoomReadDto>>> GetRoomByTheater(int theaterId)
+        {
+            var rooms = await _context.Rooms
+                                      .Where(r => r.TheaterId == theaterId)
+                                      .ToListAsync();
+
+            if (!rooms.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<IEnumerable<RoomReadDto>>(rooms));
+        }
+
         // PUT: api/Rooms/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRoom(int id, RoomCreateDto roomDto)
         {
-            var room = _mapper.Map<Room>(roomDto);
+            if (id <= 0)
+            {
+                return BadRequest("Invalid room ID");
+            }
+
+            var room = await _context.Rooms.FindAsync(id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(roomDto, room);
             _context.Entry(room).State = EntityState.Modified;
 
             try

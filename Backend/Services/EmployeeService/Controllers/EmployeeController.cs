@@ -4,7 +4,9 @@ using EmployeeService.Models;
 using EmployeeService.Repositories;
 using EmployeeService.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using EmployeeService.Helper;
 
 namespace EmployeeService.Controllers
 {
@@ -28,6 +30,10 @@ namespace EmployeeService.Controllers
         [Authorize(Policy = "AdminEmployeeOnly")]
         public async Task<ActionResult<IEnumerable<EmployeeReadDto>>> GetAllEmployees()
         {
+            // Log the user's roles and claims
+            var userRoles = User.Claims.Where(c => c.Type == "role").Select(c => c.Value);
+            _logger.LogInformation("User Roles: " + string.Join(",", userRoles));
+
             try
             {
                 var employees = await _employeeRepo.GetAllAsync();
@@ -41,6 +47,7 @@ namespace EmployeeService.Controllers
             }
         }
 
+        // Retrieve employee by ID
         [HttpGet("{id}", Name = "GetEmployeeById")]
         public async Task<ActionResult<EmployeeReadDto>> GetEmployeeById(int id)
         {
@@ -62,21 +69,26 @@ namespace EmployeeService.Controllers
             }
         }
 
+        // Create new employee
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<EmployeeReadDto>> CreateEmployee(EmployeeCreateDto employeeCreateDto)
         {
             try
             {
-                // Set default password 
-                employeeCreateDto.Password = "hilocinema@2024";
+                // Check if email already exists
+                if (await _employeeRepo.EmailExistsAsync(employeeCreateDto.Email))
+                {
+                    return BadRequest("Email already exists.");
+                }
+
+                // Hash the password
+                employeeCreateDto.Password = PasswordHasher.HashPassword(employeeCreateDto.Password);
 
                 var employee = _mapper.Map<Employee>(employeeCreateDto);
                 await _employeeRepo.CreateAsync(employee);
                 var isSaved = await _employeeRepo.SaveChangesAsync();
 
-                // Send welcome email to employee
-                _emailService.WelcomeEmail(employee);
                 if (!isSaved)
                 {
                     return StatusCode(500, "Error saving employee to database.");
@@ -92,8 +104,10 @@ namespace EmployeeService.Controllers
             }
         }
 
+        // Update employee details
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, EmployeeReadDto employeeUpdateDto)
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> UpdateEmployee(int id, EmployeeCreateDto employeeUpdateDto)
         {
             try
             {
@@ -103,6 +117,13 @@ namespace EmployeeService.Controllers
                     return NotFound();
                 }
 
+                // Update password if provided
+                if (!string.IsNullOrEmpty(employeeUpdateDto.Password))
+                {
+                    existingEmployee.Password = PasswordHasher.HashPassword(employeeUpdateDto.Password);
+                }
+
+                // Update other fields
                 _mapper.Map(employeeUpdateDto, existingEmployee);
                 await _employeeRepo.UpdateAsync(existingEmployee);
                 var isSaved = await _employeeRepo.SaveChangesAsync();
@@ -117,6 +138,36 @@ namespace EmployeeService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error updating employee with Id {id}.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        // Hide employee (soft delete)
+        [HttpPatch("{id}/hide")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> HideEmployee(int id)
+        {
+            try
+            {
+                var employee = await _employeeRepo.GetByIdAsync(id);
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+
+                await _employeeRepo.HideEmployeeAsync(id);
+                var isSaved = await _employeeRepo.SaveChangesAsync();
+
+                if (!isSaved)
+                {
+                    return StatusCode(500, "Error hiding employee in database.");
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error hiding employee with Id {id}.");
                 return StatusCode(500, "Internal server error.");
             }
         }
