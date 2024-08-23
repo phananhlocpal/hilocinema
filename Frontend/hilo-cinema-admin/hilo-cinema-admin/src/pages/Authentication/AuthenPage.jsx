@@ -2,12 +2,22 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Flex, Box, FormControl, FormLabel, Input, Checkbox, Stack, Button, Heading, Text, useColorModeValue, } from '@chakra-ui/react';
-
+import { saveAccountSession } from '../../redux/actions/authenAction';
+import { useSelector } from 'react-redux';
 export default function SimpleCard() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const employee = useSelector((state) => {
+    console.log('Redux State:', state); 
+    state.authen.account
+}
+    );
+
+console.log(employee)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,8 +27,6 @@ export default function SimpleCard() {
       password,
       site: 'admin'
     };
-
-    console.log(payload);
 
     try {
       const response = await fetch('https://localhost:4000/api/EmployeeAuthen', {
@@ -32,6 +40,13 @@ export default function SimpleCard() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('jwtToken', data.jwtToken);
+
+        console.log(data)
+
+        // Save account session to Redux
+        localStorage.setItem('account', JSON.stringify(data.account));
+        //dispatch(saveAccountSession(data.account)); 
+
         alert('Login successful!');
         navigate('/home');
       } else {

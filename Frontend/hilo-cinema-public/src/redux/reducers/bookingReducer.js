@@ -7,18 +7,12 @@
   SELECT_FOOD, 
   SET_CINEMA_DATA, 
   SET_FOOD_LIST,
+  SET_MOVIE_BOOKING,
 } from '../actions/bookingAction';
 
 const initialState = {
   cinemaData: null, // This will be updated after fetching data
-  movieBooking: {
-    title: 'Example Movie',
-    type: '2D',
-    theater: 'Galaxy Phú Thọ',
-    room: 'Room 3',
-    time: '18:00',
-    date: '2024-06-30',
-  },
+  movieBooking: null,
   selectedSeats: [],
   totalAmount: 0,
   foodList: [],
@@ -32,6 +26,12 @@ const initialState = {
 
 const bookingReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_MOVIE_BOOKING:
+      console.log('Dispatching SET_MOVIE_BOOKING with payload:', action.payload);
+      return {
+        ...state,
+        movieBooking: action.payload,
+      };
     case SET_CINEMA_DATA:
       return {
         ...state,

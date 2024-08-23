@@ -1,16 +1,31 @@
-﻿import BookingSummary from '../components/booking_components/BookingSumary';
-import ChooseSeatTab from './booking_tabs/ChooseSeatTab';
-import ChooseFoodTab from './booking_tabs/ChooseFoodTab';
-import PaymentTab from './booking_tabs/PaymentTab';
+﻿// import libraries
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Import componnents
+import BookingSummary from '../components/booking_components/BookingSumary';
+import ChooseSeatTab from './booking_tabs/ChooseSeatTab';
+import ChooseFoodTab from './booking_tabs/ChooseFoodTab';
+import PaymentTab from './booking_tabs/PaymentTab';
+
+
 const BookingPage = () => {
   const location = useLocation();
-  const { movieId, date, theaterId, roomId, time } = location.state || {};
+  const { movieId, title, date, theaterId, theaterName, roomId, roomName, time } = location.state || {};
 
-  console.log(movieId, date, theaterId, roomId, time);
+  console.log(movieId, title, date, theaterId, roomId, time);
   const [currentTab, setCurrentTab] = useState('chooseSeat');
+
+  const movieBooking = {
+    movieId: movieId,
+    title: title,
+    date: date,
+    theaterId: theaterId,
+    theaterName: theaterName,
+    roomId: roomId,
+    roomName: roomName,
+    time: time
+  };
 
   const handleContinue = () => {
     switch (currentTab) {
@@ -58,19 +73,19 @@ const BookingPage = () => {
       </div>
       <div className="md:container md:mx-auto screen1390:max-w-screen-xl xl:max-w-screen-screen1200 lg:max-w-4xl md:max-w-4xl md:px-0 sm:px-[45px] grid xl:grid-cols-3 grid-cols-1">
         {currentTab === 'chooseSeat' && (
-          <ChooseSeatTab movieId={movieId} date={date} theaterId={theaterId} roomId={roomId} time={time}/>
+          <ChooseSeatTab movieId={movieId} date={date} theaterId={theaterId} roomId={roomId} time={time} />
         )}
         {currentTab === 'chooseFood' && (
           <ChooseFoodTab />
         )}
         {currentTab === 'payment' && (
-        <PaymentTab />
-      )}
-      {/* {currentTab === 'confirm' && (
+          <PaymentTab />
+        )}
+        {/* {currentTab === 'confirm' && (
         <ConfirmTab />
       )} */}
         <div className="col-span-1 xl:pl-4 xl:order-none order-first py-4">
-          <BookingSummary onContinue={handleContinue}  />
+          <BookingSummary onContinue={handleContinue} movieBooking={movieBooking}/>
           <div className="fixed bottom-0 left-0 w-full z-100 bg-white xl:hidden transition-all duration-500 ease-in-out overflow-hidden max-h-[90vh] h-max min-h-max pb-12 pt-2 border border-[#DFDFDF] rounded-t-xl opacity-100">
             <div className="rounded opacity-100 w-full">
               <img alt="Icon show" loading="lazy" width="45" height="20" decoding="async" data-nimg="1" className="absolute -top-[6%] left-[50%] -translate-x-[50%] brightness-90 grayscale-[20%] z-100" src="/_next/static/media/delete.addc939e.png" style={{ backgroundColor: 'transparent' }} />

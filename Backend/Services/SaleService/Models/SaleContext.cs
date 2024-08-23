@@ -53,6 +53,7 @@ public partial class SaleContext : DbContext
             entity.ToTable("invoice");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
             entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
             entity.Property(e => e.PaymentMethod)

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MessageBrokerService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c60f957c3b287cdd5003a928c307942b171ad306")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+76ed5514d7b46a2c0c1aa4d1bed4d4f924c2a928")]
 [assembly: System.Reflection.AssemblyProductAttribute("MessageBrokerService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MessageBrokerService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

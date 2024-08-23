@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using ScheduleService.Repositories.ScheduleRepository;
 using ScheduleService.Models;
 using ScheduleService.Service.HttpServices;
+using ScheduleService.Service.MessagerBrokerServices;
+using MessageBrokerService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,15 +50,27 @@ builder.Services.AddScoped<MovieHttpService>();
 builder.Services.AddScoped<TheaterHttpService>();
 builder.Services.AddScoped<InvoiceHttpService>();
 
-// Configure CORS
+// Register singleton services
+builder.Services.AddSingleton<BaseMessageBroker>();
+builder.Services.AddSingleton<ScheduleConsumerService>();
+builder.Services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<ScheduleConsumerService>());
+
+// Configure CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.WithOrigins("http://localhost:5001") // Update this URL to match your React app's URL
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
+    options.AddPolicy("AllowAdmin",
+        builder => builder.WithOrigins("http://localhost:1000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials());
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowPublic",
+        builder => builder.WithOrigins("http://localhost:2000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials());
 });
 
 var app = builder.Build();
@@ -70,7 +84,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors("AllowAdmin");
+app.UseCors("AllowPublic");
 
 app.UseAuthorization();
 

@@ -10,6 +10,12 @@ export const DESELECT_SEAT = 'DESELECT_SEAT';
 export const SELECT_FOOD = 'SELECT_FOOD';
 export const SET_CINEMA_DATA = 'SET_CINEMA_DATA';
 export const SET_FOOD_LIST = 'SET_FOOD_LIST';
+export const SET_MOVIE_BOOKING = 'SET_MOVIE_BOOKING';
+
+export const setMovieBooking = (data) => ({
+  type: SET_MOVIE_BOOKING,
+  payload: data,
+});
 
 export const goto_chooseFoodTab = (data) => ({
   type: GOTO_CHOOSE_FOOD_TAB,

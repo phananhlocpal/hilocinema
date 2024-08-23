@@ -9,10 +9,12 @@ namespace SaleService.Repositories.InvoiceRepository
     public class InvoiceRepo : IInvoiceRepo
     {
         private readonly SaleContext _context;
+        private readonly ILogger<InvoiceRepo> _logger;
 
-        public InvoiceRepo(SaleContext context)
+        public InvoiceRepo(SaleContext context, ILogger<InvoiceRepo> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger;
         }
 
         public async Task<IEnumerable<Invoice>> GetAllInvoiceAsync()

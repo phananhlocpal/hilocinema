@@ -31,7 +31,7 @@ builder.Services.AddSingleton<IHostedService>(provider => provider.GetRequiredSe
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAdmin",
-        builder => builder.WithOrigins("http://localhost:1000")
+        builder => builder.WithOrigins("http://localhost:9000")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials());
@@ -40,6 +40,14 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowPublic",
         builder => builder.WithOrigins("http://localhost:2000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials());
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOther",
+        builder => builder.WithOrigins("http://localhost:1000")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials());
@@ -57,6 +65,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAdmin");
 app.UseCors("AllowPublic");
+app.UseCors("AllowOther");
 app.UseAuthorization();
 app.MapControllers();
 

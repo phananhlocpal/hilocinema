@@ -2,7 +2,7 @@
 import { useSelector } from "react-redux";
 
 const BlogComponent = () => {
-    const blogs = useSelector((state) => state.home.blogs);
+    const { blogs } = useSelector((state) => state.home);
 
     return (
         <div>

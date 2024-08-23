@@ -101,7 +101,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Movies/url/{movieUrl}",
+      "DownstreamPathTemplate": "/api/Movies/movieUrl/{movieUrl}",
       "DownstreamScheme": "https",
       "UpstreamPathTemplate": "/MovieService/url/{movieUrl}",
       "UpstreamHttpMethod": [ "Get" ],
@@ -228,9 +228,9 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Schedule/movieUrl/{movieUrl}",
+      "DownstreamPathTemplate": "/api/Schedule/url/{movieUrl}",
       "DownstreamScheme": "http",
-      "UpstreamPathTemplate": "/ScheduleService/movieUrl/{movieUrl}",
+      "UpstreamPathTemplate": "/ScheduleService/url/{movieUrl}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamHostAndPorts": [
         {
@@ -289,7 +289,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Payment/createPayment",
+      "DownstreamPathTemplate": "/api/Payment/createInvoice",
       "DownstreamScheme": "https",
       "UpstreamPathTemplate": "/PaymentService/createInvoice",
       "UpstreamHttpMethod": [ "Post" ],
@@ -452,10 +452,25 @@
     },
     // Blog Service
     {
-      "DownstreamPathTemplate": "/api/BlogService",
-      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/Blogs",
+      "DownstreamScheme": "https",
       "UpstreamPathTemplate": "/BlogService",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5008
+        }
+      ],
+      "QoSOptions": {
+        "TimeoutValue": 360000
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Blogs/{id}",
+      "DownstreamScheme": "https",
+      "UpstreamPathTemplate": "/BlogService/{id}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",

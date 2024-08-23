@@ -141,8 +141,8 @@ namespace ScheduleService.Controllers
             return Ok(scheduleReadDtos);
         }
 
-        [HttpGet("movieUrl/{url}")]
-        public async Task<ActionResult<IEnumerable<ScheduleReadDto>>> GetSchedulesByMovieUrl(string url)
+        [HttpGet("url/{url}")]
+        public async Task<ActionResult<object>> GetSchedulesByMovieUrl(string url)
         {
             var movie = await _movieHttpService.GetMovieByUrl(url);
             if (movie == null)
@@ -152,7 +152,7 @@ namespace ScheduleService.Controllers
 
             var schedules = await _repository.GetSchedulesByMovieIdAsync(movie.Id);
 
-            var scheduleReadDtos = new List<object>();
+            var scheduleMap = new Dictionary<string, Dictionary<int, TheaterScheduleDto>>();
 
             foreach (var schedule in schedules)
             {
@@ -160,32 +160,68 @@ namespace ScheduleService.Controllers
                 var room = (seat != null) ? await _theaterHttpService.GetRoomById(seat.RoomId) : null;
                 var theater = (room != null) ? await _theaterHttpService.GetTheaterById(room.TheaterId) : null;
 
-                var invoiceId = schedule.InvoiceId.GetValueOrDefault();
-                var invoice = (schedule.InvoiceId.HasValue) ? await _invoiceHttpService.GetInvoiceById(invoiceId) : null;
+                var scheduleDate = schedule.Date.ToString("yyyy-MM-dd");
 
-                room.Theater = theater;
-                seat.Room = room;
-
-                var scheduleReadDto = new 
+                if (!scheduleMap.ContainsKey(scheduleDate))
                 {
-                    Date = schedule.Date,
-                    Time = schedule.Time,
-                    Seat = seat,
-                    Invoice = invoice,
-                };
+                    scheduleMap[scheduleDate] = new Dictionary<int, TheaterScheduleDto>();
+                }
 
-                scheduleReadDtos.Add(scheduleReadDto);
+                if (!scheduleMap[scheduleDate].ContainsKey(theater.Id))
+                {
+                    scheduleMap[scheduleDate][theater.Id] = new TheaterScheduleDto
+                    {
+                        TheaterId = theater.Id,
+                        TheaterName = theater.Name,
+                        RoomSchedules = new Dictionary<int, RoomScheduleDto>()
+                    };
+                }
+
+                var theaterSchedule = scheduleMap[scheduleDate][theater.Id];
+
+                if (!theaterSchedule.RoomSchedules.ContainsKey(room.Id))
+                {
+                    theaterSchedule.RoomSchedules[room.Id] = new RoomScheduleDto
+                    {
+                        RoomId = room.Id,
+                        RoomName = room.Name,
+                        Times = new List<string>()
+                    };
+                }
+
+                var roomSchedule = theaterSchedule.RoomSchedules[room.Id];
+
+                if (!roomSchedule.Times.Contains(schedule.Time.ToString("HH:mm")))
+                {
+                    roomSchedule.Times.Add(schedule.Time.ToString("HH:mm"));
+                }
             }
 
-            object result = new
+            var formattedSchedule = scheduleMap.Select(sm => new
             {
-                Movie = new 
+                Date = sm.Key,
+                TheaterSchedules = sm.Value.Values.Select(ts => new
+                {
+                    ts.TheaterId,
+                    ts.TheaterName,
+                    RoomSchedules = ts.RoomSchedules.Values.Select(rs => new
+                    {
+                        rs.RoomId,
+                        rs.RoomName,
+                        Times = rs.Times
+                    }).ToList()
+                }).ToList()
+            }).ToList();
+
+            var result = new
+            {
+                Movie = new
                 {
                     Id = movie.Id,
                     Title = movie.Title,
                     MovieUrl = movie.MovieUrl,
                 },
-                schedules = scheduleReadDtos
+                Schedules = formattedSchedule
             };
 
             return Ok(result);
@@ -242,6 +278,20 @@ namespace ScheduleService.Controllers
             }
         }
 
+    }
+
+    public class TheaterScheduleDto
+    {
+        public int TheaterId { get; set; } // ID của rạp chiếu phim
+        public string TheaterName { get; set; } // Tên của rạp chiếu phim
+        public Dictionary<int, RoomScheduleDto> RoomSchedules { get; set; } // Danh sách lịch trình của các phòng chiếu trong rạp
+    }
+
+    public class RoomScheduleDto
+    {
+        public int RoomId { get; set; } // ID của phòng chiếu
+        public string RoomName { get; set; } // Tên của phòng chiếu
+        public List<string> Times { get; set; } // Danh sách các thời gian chiếu
     }
 
 }

@@ -6,6 +6,7 @@ import CustomerPage from "../pages/Customer/Index";
 import TheaterPage from "../pages/Theater/Index";
 import AuthenPage from "../pages/Authentication/AuthenPage"
 import CommingSoonPage from "../pages/CommingSoonPage";
+import BlogPage from "../pages/Blog/Index";
 
 const RouterComponent = () => {
     return (
@@ -13,6 +14,7 @@ const RouterComponent = () => {
             <Routes>
                 <Route path="/" element={<BasicLayout />}>
                     <Route index element={<CommingSoonPage />} />
+                    <Route path="/blog" element={<BlogPage />} />
                     <Route path="/home" element={<CommingSoonPage />} />
                     <Route path="/lich-chieu" element={<CommingSoonPage />} />
                     <Route path="/rap-chieu" element={<TheaterPage />} />

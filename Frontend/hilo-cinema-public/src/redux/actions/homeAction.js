@@ -54,3 +54,25 @@ export const fetchMovies = () => {
     }
   };
 };
+
+export const fetchBlogs = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get('http://localhost:8000/BlogService', {
+        // Thêm headers nếu cần thiết
+        headers: {
+          // Ví dụ: 'Authorization': 'Bearer token'
+        },
+      });
+
+      const blogs = response.data;
+
+      // Xử lý dữ liệu blogs nếu cần (ví dụ: lọc, sắp xếp)
+      // const processedBlogs = processBlogs(blogs);
+
+      dispatch(setBlogs(blogs));
+    } catch (error) {
+      console.error('Error fetching blogs:', error);
+    }
+  };
+};

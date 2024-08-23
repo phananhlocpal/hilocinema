@@ -11,6 +11,7 @@ const initialState = {
 };
 
 const scheduleReducer = (state = initialState, action) => {
+    console.log(action)
     switch (action.type) {
         case FETCH_SCHEDULE_REQUEST:
             return {

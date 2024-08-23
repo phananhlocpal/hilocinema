@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import  { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { selectSeat, deselectSeat } from "../../redux/actions/bookingAction";
 
@@ -13,7 +13,7 @@ const ChooseSeatComponent = ({ movieId, date, theaterId, roomId, time }) => {
       try {
         const response = await fetch(`http://localhost:8000/ScheduleService/getSeatsBySchedule?movieId=${movieId}&date=${date}&theaterId=${theaterId}&roomId=${roomId}&time=${time}`);
         const data = await response.json();
-        console.log(data)
+        console.log("Seat after fetch: ", data)
         setCinemaData({
           row: data.room.rowNum,
           col: data.room.colNum,

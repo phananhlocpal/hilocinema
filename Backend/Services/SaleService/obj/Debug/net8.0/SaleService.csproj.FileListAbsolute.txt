@@ -138,3 +138,11 @@ C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\
 C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\AutoMapper.dll
 C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\RabbitMQ.Client.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\MessageBrokerService.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\MessageBrokerService.pdb
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\Surface\source\repos\HiloCinema\Backend\Services\SaleService\bin\Debug\net8.0\StackExchange.Redis.dll

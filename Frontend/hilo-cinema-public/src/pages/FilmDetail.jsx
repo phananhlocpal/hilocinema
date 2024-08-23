@@ -1,19 +1,23 @@
-﻿import Schedule from "../components/movieDetail_components/Schedule";
-import MovieChooseDateComponent from "../components/movieDetail_components/MovieChooseDateComponent";
-import { exampleSchedule } from '../../data_example.js';
+﻿// Import libraries
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMovie } from '../redux/actions/movieDetail/movieDetailAction.js';
+import { useParams } from "react-router-dom";
+
+// Import components
+import Schedule from "../components/movieDetail_components/Schedule";
+import MovieChooseDateComponent from "../components/movieDetail_components/MovieChooseDateComponent";
 import MovieContent from "../components/movieDetail_components/MovieContent.jsx";
 import MovieOverviewComponent from "../components/movieDetail_components/MovieOverviewComponent.jsx";
 import MovieSuggestionComponent from "../components/common_components/MovieSuggestionComponent.jsx";
-import { useParams } from "react-router-dom";
+
+// Import action
+import { fetchMovie } from '../redux/actions/movieDetail/movieDetailAction.js';
 
 const FilmDetail = () => {
     const { movieUrl } = useParams();
     const dispatch = useDispatch();
     const { movie, loading, error } = useSelector((state) => state.movieDetail);
-    const { schedule } = useSelector((state) => state.schedule); 
+    const { schedule } = useSelector((state) => state.schedule);
     const [selectedDate, setSelectedDate] = useState('');
     const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -21,10 +25,10 @@ const FilmDetail = () => {
         const fetchData = async () => {
             try {
                 await dispatch(fetchMovie(movieUrl));
-                setDataLoaded(true); 
+                setDataLoaded(true);
             } catch (err) {
                 console.error("Error fetching movie:", err);
-                setDataLoaded(false); 
+                setDataLoaded(false);
             }
         };
 
@@ -32,9 +36,10 @@ const FilmDetail = () => {
     }, [dispatch, movieUrl]);
 
     useEffect(() => {
-        if (schedule.schedules && schedule.schedules.length > 0) {
-            setSelectedDate(schedule.schedules[0].date); 
+        if (schedule && schedule.length > 0) {
+            setSelectedDate(schedule[0].date);
         }
+        console.log(schedule)
     }, [schedule]);
 
     const handleDateChange = (newDate) => {
@@ -54,7 +59,7 @@ const FilmDetail = () => {
                             alt="Img Movie"
                             loading="lazy"
                             className="w-[860px] h-full md:h-full lg:h-[500px] object-fill"
-                            src={movie?.imgLarge ? `data:image/jpeg;base64,${movie.imgLarge}` : 'https://via.placeholder.com/1440x440'}  
+                            src={movie?.imgLarge ? `data:image/jpeg;base64,${movie.imgLarge}` : 'https://via.placeholder.com/1440x440'}
                         />
                         <button className="absolute top-[50%] left-[50%] -translate-x-2/4 -translate-y-2/4 z-[600]">
                             <img
@@ -81,11 +86,13 @@ const FilmDetail = () => {
                                     <h1 className="mb-4 text-base inline-block capitalize font-bold">Lịch chiếu</h1>
                                 </div>
                                 <MovieChooseDateComponent
-                                    schedule={schedule.MovieSchedule} 
+                                    schedule={schedule}
                                     selectedDate={selectedDate}
                                     onDateChange={handleDateChange}
                                 />
-                                <Schedule movieUrl={movieUrl} selectedDate={selectedDate} /> {/* Truyền selectedDate vào Schedule */}
+                                {dataLoaded && movie && (
+                                    <Schedule movie={movie} selectedDate={selectedDate} />
+                                )}
                             </div>
                         </div>
                     </div>

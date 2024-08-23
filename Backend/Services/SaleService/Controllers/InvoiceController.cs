@@ -5,26 +5,26 @@ using SaleService.Models;
 using SaleService.OtherModels;
 using SaleService.Repositories.InvoiceRepository;
 using SaleService.Service.HttpServices;
-using SaleService.Service.MessageBrokerService;
+using SaleService.Service.RabbitMQServices;
 
 namespace SaleService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ScheduleController : ControllerBase
+    public class InvoiceController : ControllerBase
     {
         private readonly IInvoiceRepo _repository;
         private readonly IMapper _mapper;
         private readonly ScheduleHttpService _scheduleHttpService;
         private readonly SalePublisherService _salePublisherService;
-        private readonly ILogger<ScheduleController> _logger;
+        private readonly ILogger<InvoiceController> _logger;
 
-        public ScheduleController(
+        public InvoiceController(
             IInvoiceRepo repository,
             IMapper mapper,
             ScheduleHttpService scheduleHttpService,
             SalePublisherService salePublisherService,
-            ILogger<ScheduleController> logger)
+            ILogger<InvoiceController> logger)
         {
             _repository = repository;
             _mapper = mapper;
@@ -117,47 +117,47 @@ namespace SaleService.Controllers
             return Ok(invoiceReadDtos);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<InvoiceCreateDto>> CreateInvoice(InvoiceCreateDto invoiceCreateDto)
-        {
-            try
-            {
-                var invoiceModel = _mapper.Map<Invoice>(invoiceCreateDto);
-                var createdInvoice = await _repository.CreateInvoiceAsync(invoiceModel);
+        //[HttpPost]
+        //public async Task<ActionResult<InvoiceCreateDto>> CreateInvoice(InvoiceCreateDto invoiceCreateDto)
+        //{
+        //    try
+        //    {
+        //        var invoiceModel = _mapper.Map<Invoice>(invoiceCreateDto);
+        //        var createdInvoice = await _repository.CreateInvoiceAsync(invoiceModel);
 
-                if (invoiceCreateDto.InvoiceFoods != null && invoiceCreateDto.InvoiceFoods.Any())
-                {
-                    var invoiceFoods = invoiceCreateDto.InvoiceFoods.Select(f => new InvoiceFood
-                    {
-                        InvoiceId = createdInvoice.Id,
-                        FoodId = f.FoodId,
-                        Quantity = f.Quantity
-                    }).ToList();
+        //        if (invoiceCreateDto.InvoiceFoods != null && invoiceCreateDto.InvoiceFoods.Any())
+        //        {
+        //            var invoiceFoods = invoiceCreateDto.InvoiceFoods.Select(f => new InvoiceFood
+        //            {
+        //                InvoiceId = createdInvoice.Id,
+        //                FoodId = f.FoodId,
+        //                Quantity = f.Quantity
+        //            }).ToList();
 
-                    // Thêm món ăn vào hóa đơn
-                    foreach (var invoiceFood in invoiceFoods)
-                    {
-                        createdInvoice.InvoiceFoods.Add(invoiceFood);
-                    }
+        //            // Thêm món ăn vào hóa đơn
+        //            foreach (var invoiceFood in invoiceFoods)
+        //            {
+        //                createdInvoice.InvoiceFoods.Add(invoiceFood);
+        //            }
 
-                    // Cập nhật hóa đơn trong cơ sở dữ liệu
-                    await _repository.UpdateInvoiceAsync(createdInvoice);
-                }
+        //            // Cập nhật hóa đơn trong cơ sở dữ liệu
+        //            await _repository.UpdateInvoiceAsync(createdInvoice);
+        //        }
                 
-                // Update schedule with new invoice ID
-                _salePublisherService.UpdateInvoiceIdInSchedule(invoiceCreateDto.Schedules, createdInvoice.Id);
+        //        // Update schedule with new invoice ID
+        //        _salePublisherService.UpdateInvoiceIdInSchedule(schedules);
 
-                // Map created invoice back to InvoiceReadDto
-                var invoiceReadDto = _mapper.Map<InvoiceReadDto>(createdInvoice);
+        //        // Map created invoice back to InvoiceReadDto
+        //        var invoiceReadDto = _mapper.Map<InvoiceReadDto>(createdInvoice);
 
-                return CreatedAtAction(nameof(GetInvoiceById), new { invoiceId = invoiceReadDto.Id }, invoiceReadDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating invoice");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating invoice");
-            }
-        }
+        //        return CreatedAtAction(nameof(GetInvoiceById), new { invoiceId = invoiceReadDto.Id }, invoiceReadDto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error creating invoice");
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "Error creating invoice");
+        //    }
+        //}
 
     }
 

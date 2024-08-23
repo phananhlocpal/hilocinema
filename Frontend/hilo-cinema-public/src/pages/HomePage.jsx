@@ -2,7 +2,7 @@
 import { useDispatch } from 'react-redux';
 import { setTab, fetchMovies } from '../redux/actions/homeAction.js';
 import { CarouselDefault } from '../components/home_components/BannerComponent.jsx';
-import PromotionalNewsComponent from '../components/home_components/PromotionalNewsComponent.jsx';
+// import PromotionalNewsComponent from '../components/home_components/PromotionalNewsComponent.jsx';
 import BlogComponent from '../components/home_components/BlogComponent.jsx';
 import CinemaControlTab from '../components/home_components/CinemaControlTab.jsx';
 import CinemaListComponent from '../components/home_components/CinemaListComponent.jsx';
@@ -20,7 +20,7 @@ const HomePage = () => {
 
   return (
     <div>
-      {/* <CarouselDefault /> */}
+      <CarouselDefault />
       <div className='px-28 pt-10'>
         <div className='flex flex-row'>
           <div className='w-3 h-12 mr-3 bg-blue-600'></div>
@@ -42,7 +42,7 @@ const HomePage = () => {
           </div>
         </div>
         <div>
-          {/* <BlogComponent/> */}
+          <BlogComponent/>
         </div>
       </div>
       <div className="line-default block" style={{ borderBottom: '6px solid #f4f4f4', transform: 'matrix(1, 0, 0, -1, 0, 0)' }}></div>
